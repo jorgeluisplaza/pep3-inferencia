@@ -47,11 +47,11 @@ datos.todos <- read.csv (
 #hist(datos.todos$Noches)
 set.seed(190)
 tabla <- data.frame(Procedencia=datos.todos$Procedencia,Localidad=datos.todos$Localidad)
-n.sys <- 30
+n.sys <- 50
 index <- sys.sample(N=nrow(tabla), n=n.sys)
 muestra <- tabla[c(index), ]
 frec <- 1:nrow(muestra)
-p1.1 <- aggregate(frec ~ Procedencia + Localidad, data = muestra, FUN = length, drop=FALSE)
+p1.1 <- aggregate(frec ~ Procedencia + Localidad, data = muestra, FUN = length)
 vicuña <- p1.1[c(which(p1.1$Localidad == "Vicuña")), "frec"]
 higuera <- p1.1[c(which(p1.1$Localidad == "La Higuera")), "frec"]
 serena <- p1.1[c(which(p1.1$Localidad == "La Serena")), "frec"]
@@ -62,7 +62,7 @@ rownames(table.p1.1) <- c("Chileno", "Extranjero")
 foo <- function(data, indices){
   frec <- 1:nrow(data)
   data <-  data[c(indices), ]
-  p1.1 <- aggregate(frec ~ Procedencia + Localidad, data = data, FUN = length, drop=FALSE)
+  p1.1 <- aggregate(frec ~ Procedencia + Localidad, data = data, FUN = length)
   vicuña <- p1.1[c(which(p1.1$Localidad == "Vicuña")), "frec"]
   higuera <- p1.1[c(which(p1.1$Localidad == "La Higuera")), "frec"]
   serena <- p1.1[c(which(p1.1$Localidad == "La Serena")), "frec"]
@@ -72,17 +72,20 @@ foo <- function(data, indices){
   return(chi$statistic)
 }
 
-n.perm <- 5000
+n.perm <- 1000
 bootobj <- boot(muestra, foo, R = n.perm)
 distribucion <- bootobj$t
+plot(bootobj)
+abline(v=observado, col="blue")
+abline(v=limit, col="red")
 alpha <- 0.05
 observado <- chisq.test(table.p1.1)$statistic
 count <- sum(distribucion > observado)
 p.value <- (count + 1)/(n.perm + 1)
 p.value
-p.95 <- alpha*n.perm
+p.95 <- (1 - alpha)*n.perm
 limit <- distribucion[p.95]
-hist(distribucion)
+hist(distribucion, breaks = 25)
 abline(v=observado, col="blue")
 abline(v=limit, col="red")
 
