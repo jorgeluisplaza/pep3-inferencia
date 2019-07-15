@@ -21,7 +21,7 @@
 #El equipo debe plantear una pregunta de investigación interesante que requiera la comparación de dos
 #proporciones.
 #Definiendo valores razonables (y bien justificados) para los diferentes factores para este estudio, el equipo
-#ha de determinar el tamaño de muestra necesitado para realizar esta comparación estadística utilizando
+#ha de determinar el tamaño de muestra necesitado para realizar esta comparación estad�stica utilizando
 #muestreo sistemático.
 #Usando la semilla d1·d2+ d3·d4, el equipo debe realizar este muestreo en los datos de Coquimbo.
 #El equipo debe usar bootstrapping para responder su pregunta de investigación con la muestra obtenida
@@ -35,7 +35,7 @@
 # llegaron 307.000. Visitantes a la región de coquimbo  a contemplar el eclipse solar Total.
 # 15 Mil de estos llegaron en avión. 30.0000 en bus y 262.500 en peajes. Bajo este contexto, el equipo de trabajo realizó diferentes 
 # Consultas a extranjeros y nacionales, siendo en particular una de estas el  presupuesto diario. Una vez realizadas las encuestas 
-# al compartir la experiencia la mayoría aseguraba que los extranjeros tenían mayor presupuesto que los chiles.
+# al compartir la experiencia la mayor�a aseguraba que los extranjeros ten�an mayor presupuesto que los chiles.
 # Junto con esto el análisis oficial entrego que los turistas extranjeros gastaron mucho más que los nacionales.
 #  en función de comparar con las cifras oficiales y la percepción de los encuestadores se plantea la pregunta de investigación 
 # ¿ La porción de chilenos y extranjeros con respecto a su presupuesto 
@@ -75,12 +75,12 @@ datos.todos <- read.csv (
 tabla <- data.frame(Procedencia=datos.todos$Procedencia,Presupuesto=datos.todos$Presupuesto)
 
 # Definiendo valores razonables (y bien justificados) para los diferentes factores para este estudio, el equipo
-# ha de determinar el tamaño de muestra necesitado para realizar esta comparación estadística utilizando
-# muestreo sistemático.
+# ha de determinar el tamaño de muestra necesitado para realizar esta comparación estad�stica utilizando
+#�muestreo sistemático.
 
 # Al utilizar Muestreo Sistematico  debemos utilizar la siguiente formula para calcular el numero de muestras:
-P= 0.5 # = Probabilidad de Ocurrencia del Fenómeno Estudiado 
-Q = 0.5 # = Probabilidad de que no Ocurra el Fenómeno (q = 1 – p)
+P= 0.5 # = Probabilidad de Ocurrencia del Feno�meno Estudiado 
+Q = 0.5 # = Probabilidad de que no Ocurra el Feno�meno (q = 1 � p)
 N = 86 # numero de la población 
 e= 0.05 # Maximo error permitido 5% es un numero alto debido a que se tiene poca cantidad de población.
 D = (e^2)/4
