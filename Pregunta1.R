@@ -51,9 +51,29 @@ datos.todos <- read.csv (
 # Nicolas Alarcon: d4 = 6
 
 
-# ************* PREGUNTA 1 FORMA A *********************** #
+
+
+### Pregunta 1 -> Comparacion de dos proporciones, utilizar bootstrapping y muestreo sistematico
+
+# Como se menciona, en la actividad en la Region de Coquimbo se recabaron datos respecto a la procedencia
+# y la localidad de los turistas, de los cuales se tienen estas opciones:
+
+# Procedencia: El turista es Chileno o Extranjero
+# Localidad: Lugar en la Region que asiste a ver el eclipse. La Higuera, La Serena o Vicuña
+
+# Con respecto a estos datos, seria interesante conocer si la proporcion de Chilenos y Extranjeros
+# es la misma con respecto al lugar que van a asistir. En el trabajo de terreno se tuvo un supuesto con respecto a ello
+# donde se piensa que los extranjeros van en su mayoria a la Higuera y los Chilenos a Vicuña y la Serena. Lo que nos hace preguntarnos
+# ¿ La proporcion de la procedencia de los turistas y la localidad a la que asistiran a ver el eclipse es realmente distinta?
+
+# Se hace calculo de la semilla con respecto a los dias de nacimiento de los investigadores mencionados previamente
 # Semilla: d1 * d2 + d3 * d4 = 10 * 13 + 10 * 6 = 190
 set.seed(190)
+
+# Para realizar el estudio de proporciones, se realiza una tabla donde las filas corresponden a 
+# la procedencia del turista y las columnas las localidades
+
+# Cada campo de la tabla corresponde al numero de turistas que asiste a la localidad
 
 # Se obtienen la procedencia y la localidad de la tabla de datos
 tabla <- data.frame(Procedencia=datos.todos$Procedencia,Localidad=datos.todos$Localidad)
@@ -66,25 +86,26 @@ frec <- 1:nrow(muestra)
 p1.1 <- aggregate(frec ~ Procedencia + Localidad, data = muestra, FUN = length)
 
 # Se calculan la cantidad de personas en las tres localidades 
-vicuÃ±a <- p1.1[c(which(p1.1$Localidad == "VicuÃ±a")), "frec"]
+vicuña <- p1.1[c(which(p1.1$Localidad == "Vicuña")), "frec"]
 higuera <- p1.1[c(which(p1.1$Localidad == "La Higuera")), "frec"]
 serena <- p1.1[c(which(p1.1$Localidad == "La Serena")), "frec"]
 
 # Se guarda en un data.frame
-table.p1.1 <- data.frame(VicuÃ±a=vicuÃ±a, "La Higuera"=higuera, "La Serena"=serena)
+table.p1.1 <- data.frame(Vicuña=vicuña, "La Higuera"=higuera, "La Serena"=serena)
 
 # Se definen el nombre de las filas 
 rownames(table.p1.1) <- c("Chileno", "Extranjero")
+
 
 # Se define estadistico para el bootstraping
 foo <- function(data, indices){
   frec <- 1:nrow(data)
   data <-  data[c(indices), ]
   p1.1 <- aggregate(frec ~ Procedencia + Localidad, data = data, FUN = length)
-  vicuÃ±a <- p1.1[c(which(p1.1$Localidad == "VicuÃ±a")), "frec"]
+  vicuña <- p1.1[c(which(p1.1$Localidad == "Vicuña")), "frec"]
   higuera <- p1.1[c(which(p1.1$Localidad == "La Higuera")), "frec"]
   serena <- p1.1[c(which(p1.1$Localidad == "La Serena")), "frec"]
-  table.p1.1 <- data.frame(VicuÃ±a=vicuÃ±a, "La Higuera"=higuera, "La Serena"=serena)
+  table.p1.1 <- data.frame(Vicuña=vicuña, "La Higuera"=higuera, "La Serena"=serena)
   rownames(table.p1.1) <- c("Chileno", "Extranjero")
   chi <- chisq.test(table.p1.1)
   return(chi$statistic)
@@ -114,26 +135,53 @@ abline(v=limit, col="red")
 
 # ************* PREGUNTA 1 FORMA B *********************** #
 
-# Semilla: d1 * d2 + d3 * d4 = 10 * 13 + 10 * 6 = 190
-set.seed(190)
+# Como se menciona, en la actividad en la Region de Coquimbo se recabaron datos respecto a la procedencia
+# y el presupuesto aproximado que los turistas van a gastar en su estadia en la region
+
+
+# Dias de nacimiento
+
+# Fernanda Muñoz: d1 = 4
+# Nicolas Gutierrez: d2 = 17
+# Sandra Hernandez: d3 = 26
+# Felipe Vasquez: d4 = 17
+
+
+# Semilla: d1 * d2 + d3 * d4 = 4 * 17 + 26 * 17 = 510
+set.seed(510)
 
 # Se obtienen la procedencia y la localidad de la tabla de datos
-tabla <- data.frame(Procedencia=datos.todos$Procedencia,Localidad=datos.todos$Localidad)
+tabla <- data.frame(Procedencia=datos.todos$Procedencia,Presupuesto=datos.todos$Presupuesto)
 
 # Se utiliza muestreo sistematico para el calculo de la muestra
-n.sys <- 50
+n.sys <- 60
 index <- sys.sample(N=nrow(tabla), n=n.sys)
 muestra <- tabla[c(index), ]
 frec <- 1:nrow(muestra)
-p1.1 <- aggregate(frec ~ Procedencia + Localidad, data = muestra, FUN = length)
+p1.1 <- aggregate(frec ~ Procedencia + Presupuesto, data = muestra, FUN = length)
 
 # Se calculan la cantidad de personas en las tres localidades 
-vicuÃ±a <- p1.1[c(which(p1.1$Localidad == "VicuÃ±a")), "frec"]
-higuera <- p1.1[c(which(p1.1$Localidad == "La Higuera")), "frec"]
-serena <- p1.1[c(which(p1.1$Localidad == "La Serena")), "frec"]
+presupuestoMenor25Chilenos <- sum(p1.1[c(which(p1.1$Presupuesto < 25000 & p1.1$Procedencia == "Chileno")), "frec"])
+presupuestoMenor25Extranjeros <- sum(p1.1[c(which(p1.1$Presupuesto < 25000 & p1.1$Procedencia == "Extranjero")), "frec"])
+presupuestoEntre2550Chilenos <- sum(p1.1[c(which(p1.1$Presupuesto > 25000 & p1.1$Presupuesto < 50000 & p1.1$Procedencia == "Chileno")), "frec"])
+presupuestoEntre2550Extranjeros <- sum(p1.1[c(which(p1.1$Presupuesto > 25000 & p1.1$Presupuesto < 50000 & p1.1$Procedencia == "Extranjero")), "frec"])
+presupuestoEntre5075Chilenos <- sum(p1.1[c(which(p1.1$Presupuesto > 50000 & p1.1$Presupuesto < 75000 & p1.1$Procedencia == "Chileno")), "frec"])
+presupuestoEntre5075Extranjeros <- sum(p1.1[c(which(p1.1$Presupuesto > 50000 & p1.1$Presupuesto < 75000 & p1.1$Procedencia == "Extranjero")), "frec"])
+presupuestoMayor75Chilenos <- sum(p1.1[c(which(p1.1$Presupuesto > 75000 & p1.1$Procedencia == "Chileno")), "frec"])
+presupuestoMayor75Extranjeros <- sum(p1.1[c(which(p1.1$Presupuesto > 75000 & p1.1$Procedencia == "Extranjero")), "frec"])
+
+presupuestoMenor25 <- c(presupuestoMenor25Chilenos, presupuestoMenor25Extranjeros)
+presupuestoEntre2550 <- c(presupuestoEntre2550Chilenos, presupuestoEntre2550Extranjeros)
+presupuestoEntre5075 <- c(presupuestoEntre5075Chilenos, presupuestoEntre5075Extranjeros)
+presupuestoMayor75 <- c(presupuestoMayor75Chilenos, presupuestoMayor75Extranjeros)
 
 # Se guarda en un data.frame
-table.p1.1 <- data.frame(VicuÃ±a=vicuÃ±a, "La Higuera"=higuera, "La Serena"=serena)
+table.p1.1 <- data.frame(
+  "[0, 25000]"=presupuestoMenor25, 
+  "[25000, 50000]"=presupuestoEntre2550, 
+  "[50000, 75000]"=presupuestoEntre5075,
+  "> 75000"=presupuestoMayor75
+)
 
 # Se definen el nombre de las filas 
 rownames(table.p1.1) <- c("Chileno", "Extranjero")
@@ -142,11 +190,29 @@ rownames(table.p1.1) <- c("Chileno", "Extranjero")
 foo <- function(data, indices){
   frec <- 1:nrow(data)
   data <-  data[c(indices), ]
-  p1.1 <- aggregate(frec ~ Procedencia + Localidad, data = data, FUN = length)
-  vicuÃ±a <- p1.1[c(which(p1.1$Localidad == "VicuÃ±a")), "frec"]
-  higuera <- p1.1[c(which(p1.1$Localidad == "La Higuera")), "frec"]
-  serena <- p1.1[c(which(p1.1$Localidad == "La Serena")), "frec"]
-  table.p1.1 <- data.frame(VicuÃ±a=vicuÃ±a, "La Higuera"=higuera, "La Serena"=serena)
+  p1.1 <- aggregate(frec ~ Procedencia + Presupuesto, data = data, FUN = length)
+  presupuestoMenor25Chilenos <- sum(p1.1[c(which(p1.1$Presupuesto < 25000 & p1.1$Procedencia == "Chileno")), "frec"])
+  presupuestoMenor25Extranjeros <- sum(p1.1[c(which(p1.1$Presupuesto < 25000 & p1.1$Procedencia == "Extranjero")), "frec"])
+  presupuestoEntre2550Chilenos <- sum(p1.1[c(which(p1.1$Presupuesto > 25000 & p1.1$Presupuesto < 50000 & p1.1$Procedencia == "Chileno")), "frec"])
+  presupuestoEntre2550Extranjeros <- sum(p1.1[c(which(p1.1$Presupuesto > 25000 & p1.1$Presupuesto < 50000 & p1.1$Procedencia == "Extranjero")), "frec"])
+  presupuestoEntre5075Chilenos <- sum(p1.1[c(which(p1.1$Presupuesto > 50000 & p1.1$Presupuesto < 75000 & p1.1$Procedencia == "Chileno")), "frec"])
+  presupuestoEntre5075Extranjeros <- sum(p1.1[c(which(p1.1$Presupuesto > 50000 & p1.1$Presupuesto < 75000 & p1.1$Procedencia == "Extranjero")), "frec"])
+  presupuestoMayor75Chilenos <- sum(p1.1[c(which(p1.1$Presupuesto > 75000 & p1.1$Procedencia == "Chileno")), "frec"])
+  presupuestoMayor75Extranjeros <- sum(p1.1[c(which(p1.1$Presupuesto > 75000 & p1.1$Procedencia == "Extranjero")), "frec"])
+  
+  presupuestoMenor25 <- c(presupuestoMenor25Chilenos, presupuestoMenor25Extranjeros)
+  presupuestoEntre2550 <- c(presupuestoEntre2550Chilenos, presupuestoEntre2550Extranjeros)
+  presupuestoEntre5075 <- c(presupuestoEntre5075Chilenos, presupuestoEntre5075Extranjeros)
+  presupuestoMayor75 <- c(presupuestoMayor75Chilenos, presupuestoMayor75Extranjeros)
+  
+  # Se guarda en un data.frame
+  table.p1.1 <- data.frame(
+    "[0, 25000]"=presupuestoMenor25, 
+    "[25000, 50000]"=presupuestoEntre2550, 
+    "[50000, 75000]"=presupuestoEntre5075,
+    "> 75000"=presupuestoMayor75
+  )
+  
   rownames(table.p1.1) <- c("Chileno", "Extranjero")
   chi <- chisq.test(table.p1.1)
   return(chi$statistic)
@@ -156,15 +222,15 @@ foo <- function(data, indices){
 n.perm <- 1000
 bootobj <- boot(muestra, foo, R = n.perm)
 
-distribucion <- bootobj$t
+distribucionFormaB <- bootobj$t
 
 # Se define un alpha de 0.05
 alpha <- 0.05
 observado <- chisq.test(table.p1.1)$statistic
-count <- sum(distribucion > observado)
+count <- sum(distribucionFormaB > observado)
 p.value <- (count + 1)/(n.perm + 1)
 p.95 <- (1 - alpha)*n.perm
-distribucion <- sort(distribucion)
+distribucion <- sort(distribucionFormaB)
 limit <- distribucion[p.95]
 
 # Se grafica y se mmuestran los valores observados y obtenidos
