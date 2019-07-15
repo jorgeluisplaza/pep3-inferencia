@@ -76,10 +76,11 @@ nuevo2 <- update(modelo, . ~ . + Presupuesto)
 comparacion <- anova(modelo, nuevo2, test = "LRT")
 print(comparacion)
 
-#predicted <- predict(modelo, muestra, type="response")  # predicted scores
+predicted <- predict(modelo, muestra, type="response")  # predicted scores
 
-#plot(predicted)
+plot(predicted)
 
+# cat("\n\n");stop("*** SIN ERROR ***")
 
 
 # Comentarios de aqui hacia abajo siguen el mismo esquema del script del profe (hasta ahora ocurren
@@ -194,17 +195,17 @@ print(summary(modelo.log))
 
 # 2) Independencia del error (residuales)
 # 
-# Es se traduce a que no ha de existir autocorrelación en los términos
-# residuales. Esto puede probarse con una prueba estadística específica
+# Es se traduce a que no ha de existir autocorrelacion en los terminos
+# residuales. Esto puede probarse con una prueba estadistica especifica
 # conocida con el nombre de sus autores: Durbin–Watson test, que
-# verifica si dos residuales adyacentes (un retardo) están
+# verifica si dos residuales adyacentes (un retardo) estan
 # correlacionados.
 # [J Durbin, GS Watson (1950). Testing for Serial Correlation in Least
 # Squares Regression, I". Biometrika. 37(3-4):409-428;
 # Durbin, GS Watson (1951). Testing for Serial Correlation in Least
 # Squares Regression, II". Biometrika. 38(1-2):159-179]
 
-# En R, es fácil revisar más retardos, por ejemplo hasta 5 retardos:
+# En R, es facil revisar mas retardos, por ejemplo hasta 5 retardos:
 
 library(car)
 cat("\n\n")
@@ -224,3 +225,44 @@ print(durbinWatsonTest(modelo, max.lag = 5))
 # se podria tener valores distintos. Aunque en este caso, es poco
 # probable que cambie la conclusion de que existe autocorrelacion.
 
+
+# Analisis de situaciones problematicas: Multicolinealidad
+# --------------------------------------------------------
+# 
+# Dejamos pendiente la revision de la multicolinealidad, que puede 
+# estropear las predicciones del modelo.
+#
+# Dijimos que podemos revisar esta seudo-condicion por medio del factor
+# de inflacion de varianza (VIF) y el estadistico tolerancia (1 / VIF).
+# Aunque no hay un acuerdo general, el valor VIF >= 10 se usa como
+# umbral para preocuparse. Tambien se ha encontrado que si el VIF 
+# promedio es mayor a 1, podria haber sesgo en el modelo.
+# En el caso de la tolerancia, se ha sugerido que valores bajo 0.2
+# podrian ser problematicos. Aunque algunos academicos creen que valores
+# cercanos a 0.4 deberian ser revisados.
+
+vifs <- vif(modelo)
+cat("\n")
+cat("Factores de inflacion de la varianza\n")
+cat("------------------------------------\n")
+print(round(vifs, 1))
+
+cat("\n")
+cat("Factor de inflacion de la varianza medio\n")
+cat("----------------------------------------\n")
+print(round(mean(vifs), 1))
+
+tols <- 1/vifs
+cat("\n")
+cat("Tolerancia\n")
+cat("----------\n")
+print(round(tols, 2))
+
+
+# Segun los resultados encontrados:
+#   VIF = 1           => bajo el umbral propuesto (VIF < 10)
+#   VIF promedio = 1  => en el limite, por lo que puede existir sesgo
+#   Tolerancia = 1    => sobre los valores propuestos (T > 0.4 siendo exigentes)
+
+# Por lo tanto se concluye que no se esta presente frente a multicolinealidad
+# (aunque puede existir sesgo)
