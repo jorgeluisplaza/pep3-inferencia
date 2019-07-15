@@ -1,22 +1,24 @@
+set.seed(100)
 
 library(stats)
 library(ggpubr)
 
 # Indicar directorio del archivo .csv
-dir <- ""
+dir <- "C:/Users/Acer/Desktop/pep3/pep3-inferencia"
 
 # Indicar nombre del archivo
 basename <- "eclipse2019.csv"
 
 # Se lee el archivo   
-#file <- file.path(basename)
+file <- file.path(dir,basename)
 
 # Se guardan los datos en una tabla
 datos.todos <- read.csv (
-  file = basename,
+  file = file,
   sep = ",",
   encoding = "UTF-8"
 )
+
 
 tabla <- data.frame(
   Procedencia=datos.todos$Procedencia,
@@ -35,12 +37,16 @@ extranjeros <- c(which(tabla$Procedencia == "Extranjero"))
 proporcion <- 0.8
 nmax <- min( length(extranjeros), length(chilenos))*proporcion
 
-# Se utiliza muestreo simple aleatorio para la obtenciÃ³n de la muestra
+# Se utiliza muestreo simple aleatorio para la obtencion de la muestra
 muestra.chilenos <- tabla[ sample( chilenos, nmax), ]
 muestra.extranjeros <- tabla[ sample( extranjeros, nmax), ]
 
 muestra <- rbind(muestra.chilenos, muestra.extranjeros)
+set.seed(1)
+muestra.chilenos <- tabla[ sample( chilenos, nmax), ]
+muestra.extranjeros <- tabla[ sample( extranjeros, nmax), ]
 
+muestra2 <- rbind(muestra.chilenos, muestra.extranjeros)
 #box.noches <- ggboxplot(
 #  data = muestra,
 #  x = "Procedencia", y = "Valor", 
@@ -55,6 +61,7 @@ nulo <- glm(
   family = binomial(link = "logit"),
   data = muestra
 )
+print(summary(nulo))
 
 modelo <- glm(
   Procedencia ~ Edad, 
@@ -62,6 +69,7 @@ modelo <- glm(
   data=muestra, 
   na.action = na.omit
 )
+print(summary(modelo))
 
 comparacion <- anova(nulo, modelo, test = "LRT")
 print(comparacion)
@@ -75,18 +83,6 @@ nuevo2 <- update(modelo, . ~ . + Presupuesto)
 
 comparacion <- anova(modelo, nuevo2, test = "LRT")
 print(comparacion)
-
-predicted <- predict(modelo, muestra, type="response")  # predicted scores
-
-plot(predicted)
-
-# cat("\n\n");stop("*** SIN ERROR ***")
-
-
-# Comentarios de aqui hacia abajo siguen el mismo esquema del script del profe (hasta ahora ocurren
-# las mismas situaciones del script del profe)
-
-# Se queda con el modelo Procedencia ~ Edad + Presupuesto tras realizar la comparacion
 
 modelo <- nuevo2
 
@@ -191,22 +187,6 @@ cat("Modelo con interacciones logaritmicas\n")
 cat("-------------------------------------\n")
 print(summary(modelo.log))
 
-
-
-# 2) Independencia del error (residuales)
-# 
-# Es se traduce a que no ha de existir autocorrelacion en los terminos
-# residuales. Esto puede probarse con una prueba estadistica especifica
-# conocida con el nombre de sus autores: Durbin–Watson test, que
-# verifica si dos residuales adyacentes (un retardo) estan
-# correlacionados.
-# [J Durbin, GS Watson (1950). Testing for Serial Correlation in Least
-# Squares Regression, I". Biometrika. 37(3-4):409-428;
-# Durbin, GS Watson (1951). Testing for Serial Correlation in Least
-# Squares Regression, II". Biometrika. 38(1-2):159-179]
-
-# En R, es facil revisar mas retardos, por ejemplo hasta 5 retardos:
-
 library(car)
 cat("\n\n")
 cat("Prueba de Durbin–Watson para autocorrelaciones entre errores\n")
@@ -266,3 +246,79 @@ print(round(tols, 2))
 
 # Por lo tanto se concluye que no se esta presente frente a multicolinealidad
 # (aunque puede existir sesgo)
+
+
+###########################################
+
+
+
+
+library(caret)
+
+
+#Crear particion de muestra con proporcion 0.8
+Train <- createDataPartition(muestra$Procedencia, p = 0.8, list=FALSE)
+training <- muestra[ Train, ]
+testing <- muestra[ -Train, ]
+
+
+mod_fit1 <- train(Procedencia ~ Edad ,  data=training, method="glm", family="binomial")
+mod_fit2 <- train(Procedencia ~ Edad + Presupuesto,  data=training, method="glm", family="binomial")
+mod_fit3 <- train(Procedencia ~ Edad + Presupuesto + Noches,  data=training, method="glm", family="binomial"(link="logit"))
+
+exp(coef(mod_fit1$finalModel))
+exp(coef(mod_fit2$finalModel))
+exp(coef(mod_fit3$finalModel))
+
+predict(mod_fit1, newdata=testing, type="prob")
+predict(mod_fit2, newdata=testing, type="prob")
+predict(mod_fit3, newdata=testing, type="prob")
+
+
+
+##EVALUACION DE MODELO
+
+mod_fit_one <- glm(Procedencia ~ Edad, data = training, family="binomial"(link="logit"))
+
+mod_fit_two <- glm(Procedencia ~ Edad + Presupuesto, data = training, family="binomial"(link="logit"))
+
+mod_fit_three <- glm(Procedencia ~ Edad + Presupuesto + Noches, data = training, family="binomial"(link="logit"))
+
+pred1 <- predict(mod_fit_one, newdata=testing, type="response")
+pred2 <- predict(mod_fit_two, newdata=testing, type="response")
+pred3 <- predict(mod_fit_three, newdata=testing, type="response")
+
+
+# Likelihood Ratio Test
+
+# Lo mismo que esta mas arriba con los casos sospechosos, VIF y condiciones (debiese ser lo mismo)
+
+
+
+
+
+library(pROC)
+
+
+roc1 <- roc(testing$Procedencia, pred1)
+roc1
+plot(roc1)
+
+roc2 <- roc(testing$Procedencia, pred2)
+roc2
+plot(roc2)
+
+roc3 <- roc(testing$Procedencia, pred3)
+roc3
+plot(roc3)
+
+roc.test(roc1,roc2)
+roc.test(roc2,roc3)
+roc.test(roc1,roc3)
+
+# 1- Procedencia ~ Edad
+# 2- Procedencia ~ Edad + Presupuesto
+# 3- Procedencia ~ Edad + Presupuesto + Noches
+
+# AUC de modelo 1 es menor a 2 y 3
+# AUC de 2 y 3 son iguales
