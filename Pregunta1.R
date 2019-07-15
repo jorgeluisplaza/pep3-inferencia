@@ -59,12 +59,12 @@ datos.todos <- read.csv (
 # y la localidad de los turistas, de los cuales se tienen estas opciones:
 
 # Procedencia: El turista es Chileno o Extranjero
-# Localidad: Lugar en la Region que asiste a ver el eclipse. La Higuera, La Serena o Vicuña
+# Localidad: Lugar en la Region que asiste a ver el eclipse. La Higuera, La Serena o VicuÃ±a
 
 # Con respecto a estos datos, seria interesante conocer si la proporcion de Chilenos y Extranjeros
 # es la misma con respecto al lugar que van a asistir. En el trabajo de terreno se tuvo un supuesto con respecto a ello
-# donde se piensa que los extranjeros van en su mayoria a la Higuera y los Chilenos a Vicuña y la Serena. Lo que nos hace preguntarnos
-# ¿ La proporcion de la procedencia de los turistas y la localidad a la que asistiran a ver el eclipse es realmente distinta?
+# donde se piensa que los extranjeros van en su mayoria a la Higuera y los Chilenos a VicuÃ±a y la Serena. Lo que nos hace preguntarnos
+# ? La proporcion de la procedencia de los turistas y la localidad a la que asistiran a ver el eclipse es realmente distinta?
 
 # Se hace calculo de la semilla con respecto a los dias de nacimiento de los investigadores mencionados previamente
 # Semilla: d1 * d2 + d3 * d4 = 10 * 13 + 10 * 6 = 190
@@ -86,26 +86,25 @@ frec <- 1:nrow(muestra)
 p1.1 <- aggregate(frec ~ Procedencia + Localidad, data = muestra, FUN = length)
 
 # Se calculan la cantidad de personas en las tres localidades 
-vicuña <- p1.1[c(which(p1.1$Localidad == "Vicuña")), "frec"]
+vicuÃ±a <- p1.1[c(which(p1.1$Localidad == "VicuÃ±a")), "frec"]
 higuera <- p1.1[c(which(p1.1$Localidad == "La Higuera")), "frec"]
 serena <- p1.1[c(which(p1.1$Localidad == "La Serena")), "frec"]
 
 # Se guarda en un data.frame
-table.p1.1 <- data.frame(Vicuña=vicuña, "La Higuera"=higuera, "La Serena"=serena)
+table.p1.1 <- data.frame(VicuÃ±a=vicuÃ±a, "La Higuera"=higuera, "La Serena"=serena)
 
 # Se definen el nombre de las filas 
 rownames(table.p1.1) <- c("Chileno", "Extranjero")
-
 
 # Se define estadistico para el bootstraping
 foo <- function(data, indices){
   frec <- 1:nrow(data)
   data <-  data[c(indices), ]
   p1.1 <- aggregate(frec ~ Procedencia + Localidad, data = data, FUN = length)
-  vicuña <- p1.1[c(which(p1.1$Localidad == "Vicuña")), "frec"]
+  VicuÃ±a <- p1.1[c(which(p1.1$Localidad == "VicuÃ±a")), "frec"]
   higuera <- p1.1[c(which(p1.1$Localidad == "La Higuera")), "frec"]
   serena <- p1.1[c(which(p1.1$Localidad == "La Serena")), "frec"]
-  table.p1.1 <- data.frame(Vicuña=vicuña, "La Higuera"=higuera, "La Serena"=serena)
+  table.p1.1 <- data.frame(VicuÃ±a=VicuÃ±a, "La Higuera"=higuera, "La Serena"=serena)
   rownames(table.p1.1) <- c("Chileno", "Extranjero")
   chi <- chisq.test(table.p1.1)
   return(chi$statistic)
@@ -141,7 +140,7 @@ abline(v=limit, col="red")
 
 # Dias de nacimiento
 
-# Fernanda Muñoz: d1 = 4
+# Fernanda Mu?oz: d1 = 4
 # Nicolas Gutierrez: d2 = 17
 # Sandra Hernandez: d3 = 26
 # Felipe Vasquez: d4 = 17
@@ -161,26 +160,26 @@ frec <- 1:nrow(muestra)
 p1.1 <- aggregate(frec ~ Procedencia + Presupuesto, data = muestra, FUN = length)
 
 # Se calculan la cantidad de personas en las tres localidades 
-presupuestoMenor25Chilenos <- sum(p1.1[c(which(p1.1$Presupuesto < 25000 & p1.1$Procedencia == "Chileno")), "frec"])
-presupuestoMenor25Extranjeros <- sum(p1.1[c(which(p1.1$Presupuesto < 25000 & p1.1$Procedencia == "Extranjero")), "frec"])
-presupuestoEntre2550Chilenos <- sum(p1.1[c(which(p1.1$Presupuesto > 25000 & p1.1$Presupuesto < 50000 & p1.1$Procedencia == "Chileno")), "frec"])
-presupuestoEntre2550Extranjeros <- sum(p1.1[c(which(p1.1$Presupuesto > 25000 & p1.1$Presupuesto < 50000 & p1.1$Procedencia == "Extranjero")), "frec"])
-presupuestoEntre5075Chilenos <- sum(p1.1[c(which(p1.1$Presupuesto > 50000 & p1.1$Presupuesto < 75000 & p1.1$Procedencia == "Chileno")), "frec"])
-presupuestoEntre5075Extranjeros <- sum(p1.1[c(which(p1.1$Presupuesto > 50000 & p1.1$Presupuesto < 75000 & p1.1$Procedencia == "Extranjero")), "frec"])
-presupuestoMayor75Chilenos <- sum(p1.1[c(which(p1.1$Presupuesto > 75000 & p1.1$Procedencia == "Chileno")), "frec"])
-presupuestoMayor75Extranjeros <- sum(p1.1[c(which(p1.1$Presupuesto > 75000 & p1.1$Procedencia == "Extranjero")), "frec"])
+presupuesto.menor25.chilenos <- sum(p1.1[c(which(p1.1$Presupuesto < 25000 & p1.1$Procedencia == "Chileno")), "frec"])
+presupuesto.menor25.extranjeros <- sum(p1.1[c(which(p1.1$Presupuesto < 25000 & p1.1$Procedencia == "Extranjero")), "frec"])
+presupuesto.entre2550.chilenos <- sum(p1.1[c(which(p1.1$Presupuesto > 25000 & p1.1$Presupuesto < 50000 & p1.1$Procedencia == "Chileno")), "frec"])
+presupuesto.entre2550.extranjeros <- sum(p1.1[c(which(p1.1$Presupuesto > 25000 & p1.1$Presupuesto < 50000 & p1.1$Procedencia == "Extranjero")), "frec"])
+presupuesto.entre5075.chilenos <- sum(p1.1[c(which(p1.1$Presupuesto > 50000 & p1.1$Presupuesto < 75000 & p1.1$Procedencia == "Chileno")), "frec"])
+presupuesto.entre5075.extranjeros <- sum(p1.1[c(which(p1.1$Presupuesto > 50000 & p1.1$Presupuesto < 75000 & p1.1$Procedencia == "Extranjero")), "frec"])
+presupuesto.mayor75.chilenos <- sum(p1.1[c(which(p1.1$Presupuesto > 75000 & p1.1$Procedencia == "Chileno")), "frec"])
+presupuesto.mayor75.extranjeros <- sum(p1.1[c(which(p1.1$Presupuesto > 75000 & p1.1$Procedencia == "Extranjero")), "frec"])
 
-presupuestoMenor25 <- c(presupuestoMenor25Chilenos, presupuestoMenor25Extranjeros)
-presupuestoEntre2550 <- c(presupuestoEntre2550Chilenos, presupuestoEntre2550Extranjeros)
-presupuestoEntre5075 <- c(presupuestoEntre5075Chilenos, presupuestoEntre5075Extranjeros)
-presupuestoMayor75 <- c(presupuestoMayor75Chilenos, presupuestoMayor75Extranjeros)
+presupuesto.menor25 <- c(presupuesto.menor25.chilenos, presupuesto.menor25.extranjeros)
+presupuesto.entre2550 <- c(presupuesto.entre2550.chilenos, presupuesto.entre2550.extranjeros)
+presupuesto.entre5075 <- c(presupuesto.entre5075.chilenos, presupuesto.entre5075.extranjeros)
+presupuesto.mayor75 <- c(presupuesto.mayor75.chilenos, presupuesto.mayor75.extranjeros)
 
 # Se guarda en un data.frame
 table.p1.1 <- data.frame(
-  "[0, 25000]"=presupuestoMenor25, 
-  "[25000, 50000]"=presupuestoEntre2550, 
-  "[50000, 75000]"=presupuestoEntre5075,
-  "> 75000"=presupuestoMayor75
+  "[0, 25000]"=presupuesto.menor25, 
+  "[25000, 50000]"=presupuesto.entre2550, 
+  "[50000, 75000]"=presupuesto.entre5075,
+  "> 75000"=presupuesto.mayor75
 )
 
 # Se definen el nombre de las filas 
@@ -191,26 +190,26 @@ foo <- function(data, indices){
   frec <- 1:nrow(data)
   data <-  data[c(indices), ]
   p1.1 <- aggregate(frec ~ Procedencia + Presupuesto, data = data, FUN = length)
-  presupuestoMenor25Chilenos <- sum(p1.1[c(which(p1.1$Presupuesto < 25000 & p1.1$Procedencia == "Chileno")), "frec"])
-  presupuestoMenor25Extranjeros <- sum(p1.1[c(which(p1.1$Presupuesto < 25000 & p1.1$Procedencia == "Extranjero")), "frec"])
-  presupuestoEntre2550Chilenos <- sum(p1.1[c(which(p1.1$Presupuesto > 25000 & p1.1$Presupuesto < 50000 & p1.1$Procedencia == "Chileno")), "frec"])
-  presupuestoEntre2550Extranjeros <- sum(p1.1[c(which(p1.1$Presupuesto > 25000 & p1.1$Presupuesto < 50000 & p1.1$Procedencia == "Extranjero")), "frec"])
-  presupuestoEntre5075Chilenos <- sum(p1.1[c(which(p1.1$Presupuesto > 50000 & p1.1$Presupuesto < 75000 & p1.1$Procedencia == "Chileno")), "frec"])
-  presupuestoEntre5075Extranjeros <- sum(p1.1[c(which(p1.1$Presupuesto > 50000 & p1.1$Presupuesto < 75000 & p1.1$Procedencia == "Extranjero")), "frec"])
-  presupuestoMayor75Chilenos <- sum(p1.1[c(which(p1.1$Presupuesto > 75000 & p1.1$Procedencia == "Chileno")), "frec"])
-  presupuestoMayor75Extranjeros <- sum(p1.1[c(which(p1.1$Presupuesto > 75000 & p1.1$Procedencia == "Extranjero")), "frec"])
+  presupuesto.menor25.chilenos <- sum(p1.1[c(which(p1.1$Presupuesto < 25000 & p1.1$Procedencia == "Chileno")), "frec"])
+  presupuesto.menor25.extranjeros <- sum(p1.1[c(which(p1.1$Presupuesto < 25000 & p1.1$Procedencia == "Extranjero")), "frec"])
+  presupuesto.entre2550.chilenos <- sum(p1.1[c(which(p1.1$Presupuesto > 25000 & p1.1$Presupuesto < 50000 & p1.1$Procedencia == "Chileno")), "frec"])
+  presupuesto.entre2550.extranjeros <- sum(p1.1[c(which(p1.1$Presupuesto > 25000 & p1.1$Presupuesto < 50000 & p1.1$Procedencia == "Extranjero")), "frec"])
+  presupuesto.entre5075.chilenos <- sum(p1.1[c(which(p1.1$Presupuesto > 50000 & p1.1$Presupuesto < 75000 & p1.1$Procedencia == "Chileno")), "frec"])
+  presupuesto.entre5075.extranjeros <- sum(p1.1[c(which(p1.1$Presupuesto > 50000 & p1.1$Presupuesto < 75000 & p1.1$Procedencia == "Extranjero")), "frec"])
+  presupuesto.mayor75.chilenos <- sum(p1.1[c(which(p1.1$Presupuesto > 75000 & p1.1$Procedencia == "Chileno")), "frec"])
+  presupuesto.mayor75.extranjeros <- sum(p1.1[c(which(p1.1$Presupuesto > 75000 & p1.1$Procedencia == "Extranjero")), "frec"])
   
-  presupuestoMenor25 <- c(presupuestoMenor25Chilenos, presupuestoMenor25Extranjeros)
-  presupuestoEntre2550 <- c(presupuestoEntre2550Chilenos, presupuestoEntre2550Extranjeros)
-  presupuestoEntre5075 <- c(presupuestoEntre5075Chilenos, presupuestoEntre5075Extranjeros)
-  presupuestoMayor75 <- c(presupuestoMayor75Chilenos, presupuestoMayor75Extranjeros)
+  presupuesto.menor25 <- c(presupuesto.menor25.chilenos, presupuesto.menor25.extranjeros)
+  presupuesto.entre2550 <- c(presupuesto.entre2550.chilenos, presupuesto.entre2550.extranjeros)
+  presupuesto.entre5075 <- c(presupuesto.entre5075.chilenos, presupuesto.entre5075.extranjeros)
+  presupuesto.mayor75 <- c(presupuesto.mayor75.chilenos, presupuesto.mayor75.extranjeros)
   
   # Se guarda en un data.frame
   table.p1.1 <- data.frame(
-    "[0, 25000]"=presupuestoMenor25, 
-    "[25000, 50000]"=presupuestoEntre2550, 
-    "[50000, 75000]"=presupuestoEntre5075,
-    "> 75000"=presupuestoMayor75
+    "[0, 25000]"=presupuesto.menor25, 
+    "[25000, 50000]"=presupuesto.entre2550, 
+    "[50000, 75000]"=presupuesto.entre5075,
+    "> 75000"=presupuesto.mayor75
   )
   
   rownames(table.p1.1) <- c("Chileno", "Extranjero")
