@@ -41,19 +41,19 @@ datos.todos <- read.csv (
 )
 
   #Pregunta 1
-  #El equipo debe plantear una pregunta de investigaciÃ³n interesante que requiera la comparaciÃ³n de dos
+  #El equipo debe plantear una pregunta de investigacion interesante que requiera la comparacion de dos
   #proporciones.
   #Definiendo valores razonables (y bien justificados) para los diferentes factores para este estudio, el equipo
-  #ha de determinar el tamaÃ±o de muestra necesitado para realizar esta comparaciÃ³n estadÃ�stica utilizando
-  #muestreo sistemÃ¡tico.
+  #ha de determinar el tamaño de muestra necesitado para realizar esta comparacion estadistica utilizando
+  #muestreo sistematico.
   #Usando la semilla d1Â·d2+ d3Â·d4, el equipo debe realizar este muestreo en los datos de Coquimbo.
 
-  #El equipo debe usar bootstrapping para responder su pregunta de investigaciÃ³n con la muestra obtenida
+  #El equipo debe usar bootstrapping para responder su pregunta de investigacion con la muestra obtenida
   
-  # Pregunta de investigaciÃ³n: El martes 2 de julio del 2019 a las 15:23 horas la luna comenzÃ³ a tapar el sol.  
-  # Ãste fenÃ³meno se dio en una radio de 170 kilÃ³metros de territorio,que se extendiÃ³ desde Guanaqueros a Domeyko.
-  # El punto de mayor atracciÃ³n se dio a las 16:38 minutos, donde se produjo la total oscuridad. 
-  # La duraciÃ³n de oscuridad va a variar dependiendo de la ubicaciÃ³n de observaciÃ³n.
+  # Pregunta de investigacion: El martes 2 de julio del 2019 a las 15:23 horas la luna comenzo a tapar el sol.  
+  # Este fenomeno se dio en una radio de 170 kilometros de territorio,que se extendio desde Guanaqueros a Domeyko.
+  # El punto de mayor atraccion se dio a las 16:38 minutos, donde se produjo la total oscuridad. 
+  # La duracion de oscuridad va a variar dependiendo de la ubicacion de observacion.
 
   # Como se menciona, en la actividad en la Region de Coquimbo se recabaron datos respecto a la procedencia
   # y el presupuesto aproximado que los turistas van a gastar en su estadia en la region
