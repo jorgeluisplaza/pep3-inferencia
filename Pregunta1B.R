@@ -13,7 +13,35 @@
 # Felipe Vasquez: d3 = 17
 # Nicolas Gutierrez: d4 = 17
 
-# Pregunta 1
+
+
+
+										# Pregunta 1
+
+#El equipo debe plantear una pregunta de investigación interesante que requiera la comparación de dos
+#proporciones.
+#Definiendo valores razonables (y bien justificados) para los diferentes factores para este estudio, el equipo
+#ha de determinar el tamaño de muestra necesitado para realizar esta comparación estadística utilizando
+#muestreo sistemático.
+#Usando la semilla d1·d2+ d3·d4, el equipo debe realizar este muestreo en los datos de Coquimbo.
+#El equipo debe usar bootstrapping para responder su pregunta de investigación con la muestra obtenida
+
+
+
+
+
+# Pregunta de investigación: El martes 2 de julio del 2019  Según cifras oficiales 
+#(http://www.diarioeldia.cl/economia/turismo/eclipse-turistas-se-quedaron-en-promedio-3-dias-gastaron-99-mil-diarios)
+# llegaron 307.000. Visitantes a la región de coquimbo  a contemplar el eclipse solar Total.
+# 15 Mil de estos llegaron en avión. 30.0000 en bus y 262.500 en peajes. Bajo este contexto, el equipo de trabajo realizó diferentes 
+# Consultas a extranjeros y nacionales, siendo en particular una de estas el  presupuesto diario. Una vez realizadas las encuestas 
+# al compartir la experiencia la mayoría aseguraba que los extranjeros tenían mayor presupuesto que los chiles.
+# Junto con esto el análisis oficial entrego que los turistas extranjeros gastaron mucho más que los nacionales.
+#  en función de comparar con las cifras oficiales y la percepción de los encuestadores se plantea la pregunta de investigación 
+# ¿ La porción de chilenos y extranjeros con respecto a su presupuesto 
+# diario fue diferente?.
+
+
 
 library(ggpubr)
 library(ggplot2)
@@ -24,11 +52,13 @@ library(devtools)
 #install_github("DFJL/SamplingUtil")
 library(SamplingUtil)
 
+
 # Indicar directorio del archivo .csv
 dir <- ""
-
-# Indicar nombre del archivo
+#Indicar nombre del archivo
 basename <- "eclipse2019.csv"
+## Link de descarga: https://docs.google.com/spreadsheets/d/15mG2ATv2ArBVioZ8NSSuixG7Fr_cX8iw_0K3thaGz_M/edit?usp=sharing #
+# Acceso correo usach # 
 
 # Se lee el archivo   
 file <- file.path(basename)
@@ -40,45 +70,51 @@ datos.todos <- read.csv (
   encoding = "UTF-8"
 )
 
-  #Pregunta 1
-  #El equipo debe plantear una pregunta de investigacion interesante que requiera la comparacion de dos
-  #proporciones.
-  #Definiendo valores razonables (y bien justificados) para los diferentes factores para este estudio, el equipo
-  #ha de determinar el tamaño de muestra necesitado para realizar esta comparacion estadistica utilizando
-  #muestreo sistematico.
-  #Usando la semilla d1Â·d2+ d3Â·d4, el equipo debe realizar este muestreo en los datos de Coquimbo.
 
-  #El equipo debe usar bootstrapping para responder su pregunta de investigacion con la muestra obtenida
-  
-  # Pregunta de investigacion: El martes 2 de julio del 2019 a las 15:23 horas la luna comenzo a tapar el sol.  
-  # Este fenomeno se dio en una radio de 170 kilometros de territorio,que se extendio desde Guanaqueros a Domeyko.
-  # El punto de mayor atraccion se dio a las 16:38 minutos, donde se produjo la total oscuridad. 
-  # La duracion de oscuridad va a variar dependiendo de la ubicacion de observacion.
+# Se obtienen la procedencia y el presupuesto de la tabla de datos
+tabla <- data.frame(Procedencia=datos.todos$Procedencia,Presupuesto=datos.todos$Presupuesto)
 
-  # Como se menciona, en la actividad en la Region de Coquimbo se recabaron datos respecto a la procedencia
-  # y el presupuesto aproximado que los turistas van a gastar en su estadia en la region
-  # Mientras se realizaba el trabajo de terreno, los encuestadores vieron una clara diferencia de gastos entre los 
-  # turistas extranjeros y Chilenos proporcionalmente, donde se realiza el supuesto que la proporcion de gastos de los extranjeros
-  # era mayor al de los chilenos.
-  # Por lo tanto, se plantea la pregunta ¿ La proporcion de Chilenos y Extranjeros con respecto al presupuesto por dia
-  # de su estadia en la Region para ver el eclipse total de sol es realmente distinta ?
+# Definiendo valores razonables (y bien justificados) para los diferentes factores para este estudio, el equipo
+# ha de determinar el tamaño de muestra necesitado para realizar esta comparación estadística utilizando
+# muestreo sistemático.
+
+# Al utilizar Muestreo Sistematico  debemos utilizar la siguiente formula para calcular el numero de muestras:
+P= 0.5 # = Probabilidad de Ocurrencia del Fenómeno Estudiado 
+Q = 0.5 # = Probabilidad de que no Ocurra el Fenómeno (q = 1 – p)
+N = 86 # numero de la población 
+e= 0.05 # Maximo error permitido 5% es un numero alto debido a que se tiene poca cantidad de población.
+D = (e^2)/4
+nMuestras = (N*P*Q)/((N-1)*D + P*Q)
+nMuestras <- ceiling(nMuestras) # aproximar hacia arriba
+cat("Numero de muestras a utilizar :")
+cat(nMuestras)
+
+# Formula obtenida:  VI Muestreo Sistemático, Dr. Jesús Mellado Bosque
+# http://www.uaaan.mx/~jmelbos/muestreo/muapu4.pdf
 
 
 # Se calcula la semilla con los dias de nacimientos de los integrantes mencionados anteriormente
 # Semilla: d1 * d2 + d3 * d4 = 4 * 13 + 17 * 17 = 341
 set.seed(341)
 
-# Se obtienen la procedencia y el presupuesto de la tabla de datos
-tabla <- data.frame(Procedencia=datos.todos$Procedencia,Presupuesto=datos.todos$Presupuesto)
+
+### explicar como se hace 
 
 # Se utiliza muestreo sistematico para el calculo de la muestra
-n.sys <- 60
+n.sys <- nMuestras
 index <- sys.sample(N=nrow(tabla), n=n.sys)
 muestra <- tabla[c(index), ]
 frec <- 1:nrow(muestra)
 p1.1 <- aggregate(frec ~ Procedencia + Presupuesto, data = muestra, FUN = length)
 
-# Se calculan la cantidad de personas con sus respectivos presupuestos
+
+##  Los presupuestos son presupuestos 
+# 1 - [0-25.000]
+# 2 - [2500-50.000]
+# 3 - [50.000-75.000]
+# 4 - [75.000-o Mas]
+
+# Se  calculan la cantidad de personas con sus respectivos presupuestos
 presupuesto.Menor25.Chilenos <- sum(p1.1[c(which(p1.1$Presupuesto < 25000 & p1.1$Procedencia == "Chileno")), "frec"])
 presupuesto.Menor25.Extranjeros <- sum(p1.1[c(which(p1.1$Presupuesto < 25000 & p1.1$Procedencia == "Extranjero")), "frec"])
 presupuesto.Entre2550.Chilenos <- sum(p1.1[c(which(p1.1$Presupuesto > 25000 & p1.1$Presupuesto < 50000 & p1.1$Procedencia == "Chileno")), "frec"])
@@ -87,6 +123,8 @@ presupuesto.Entre5075.Chilenos <- sum(p1.1[c(which(p1.1$Presupuesto > 50000 & p1
 presupuesto.Entre5075.Extranjeros <- sum(p1.1[c(which(p1.1$Presupuesto > 50000 & p1.1$Presupuesto < 75000 & p1.1$Procedencia == "Extranjero")), "frec"])
 presupuesto.Mayor75.Chilenos <- sum(p1.1[c(which(p1.1$Presupuesto > 75000 & p1.1$Procedencia == "Chileno")), "frec"])
 presupuesto.Mayor75.Extranjeros <- sum(p1.1[c(which(p1.1$Presupuesto > 75000 & p1.1$Procedencia == "Extranjero")), "frec"])
+
+
 
 # Se agregan los presupuestos de Chilenos y Extranjeros
 presupuesto.Menor25 <- c(presupuesto.Menor25.Chilenos, presupuesto.Menor25.Extranjeros)
@@ -104,6 +142,14 @@ table.p1.1 <- data.frame(
 
 # Se definen el nombre de las filas 
 rownames(table.p1.1) <- c("Chileno", "Extranjero")
+
+
+#### DEFENIR MEJOR #######
+#### DEFENIR MEJOR #######
+#### DEFENIR MEJOR #######
+#### DEFENIR MEJOR #######
+#### DEFENIR MEJOR #######
+#### DEFENIR MEJOR #######
 
 # Se define estadistico para el bootstraping
 # Para cada iteracion se hace calculo de tabla
@@ -128,6 +174,8 @@ foo <- function(data, indices){
   presupuesto.Entre5075 <- c(presupuesto.Entre5075.Chilenos, presupuesto.Entre5075.Extranjeros)
   presupuesto.Mayor75 <- c(presupuesto.Mayor75.Chilenos, presupuesto.Mayor75.Extranjeros)
   
+  
+
   # Se guarda en un data.frame
   table.p1.1 <- data.frame(
     "[0, 25000]"=presupuesto.Menor25, 
@@ -142,11 +190,32 @@ foo <- function(data, indices){
   
 }
 
+
+#### DEFENIR MEJOR #######
+#### DEFENIR MEJOR #######
+#### DEFENIR MEJOR #######
+#### DEFENIR MEJOR #######
+#### DEFENIR MEJOR #######
+#### DEFENIR MEJOR #######
+
+
+
+
 # Se calcula el bootstraping sobre la cantidad de repeticion n.perm
 n.perm <- 1000
 bootobj <- boot(muestra, foo, R = n.perm)
 
 distribucion <- bootobj$t
+
+
+
+#### DEFENIR MEJOR #######
+#### DEFENIR MEJOR #######
+#### DEFENIR MEJOR #######
+#### DEFENIR MEJOR #######
+#### DEFENIR MEJOR #######
+#### DEFENIR MEJOR #######
+
 
 # Se define un alpha de 0.05
 alpha <- 0.05

@@ -116,12 +116,13 @@ cat(nMuestras)
 set.seed(256)
 
 
+### EXPLICAR QUE HACER Y COMO FUNCIONA #### 
 #(C)
 # Se utiliza muestreo sistematico para el calculo de la muestra
-n.sys <- nMuestras
-index <- sys.sample(N=nrow(tabla), n=n.sys)
-muestra <- tabla[c(index), ]
-frec <- 1:nrow(muestra)
+n.sys <- nMuestras    # numero de muestras # 
+index <- sys.sample(N=nrow(tabla), n=n.sys) ##  ***************# 
+muestra <- tabla[c(index), ]##  ***************# 
+frec <- 1:nrow(muestra)##  ***************# 
 p1.1 <- aggregate(frec ~ Procedencia + Localidad, data = muestra, FUN = length)
 
 ### PLOTEAR LOS RESULTADOS ### 
