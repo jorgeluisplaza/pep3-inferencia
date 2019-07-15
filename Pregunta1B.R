@@ -98,7 +98,19 @@ cat(nMuestras)
 set.seed(341)
 
 
-###Â explicar como se hace 
+### El muestre sistematico es una tecnica de muestreo aleatorio sencillo y eficaz
+### La aplicacion del muestreo sistematico se hace de la siguiente forma:
+
+### 1 - Se divide el marco muestral en k = N/n fragmentos, donde N corresponde al tamaño de la poblcacion
+### y n al tamaño de la muestra que deseamos
+
+### 2 - Se elige un numero aleatorio de inicio dentro del intervalo escogido
+
+### 3 - Se va eligiendo los individuos de acuerdo al numero de inicio mas el numero k obtenido como una secuencia
+### aritmetica simple
+
+### Para la utilizacion del muestreo sistematico se utiliza una libreria externa llamada SamplingUnit, la funcion utilizada
+### es sys.sample
 
 # Se utiliza muestreo sistematico para el calculo de la muestra
 n.sys <- nMuestras
