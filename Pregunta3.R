@@ -12,7 +12,7 @@ set.seed(190)
 basename <- "eclipse2019.csv"
 
 # Se lee el archivo   
-file <- file.path(dir,basename)
+#file <- file.path(dir,basename)
 
 # Se guardan los datos en una tabla
 datos.todos <- read.csv (
@@ -47,8 +47,8 @@ muestra.extranjeros <- tabla[ indices.extranjeros, ]
 muestra <- rbind(muestra.chilenos, muestra.extranjeros)
 
 # Para realizar el modelo automático de R
-muestra.completa.chilenos <- datos.todos[ sample( chilenos, nmax), ]
-muestra.completa.extranjeros <- datos.todos[ sample( extranjeros, nmax), ]
+muestra.completa.chilenos <- datos.todos[ indices.extranjeros, ]
+muestra.completa.extranjeros <- datos.todos[ indices.extranjeros, ]
 muestra.completa <- rbind(muestra.completa.chilenos, muestra.completa.extranjeros)
 
 muestra.chilenos <- tabla[ sample( chilenos, nmax), ]
@@ -312,14 +312,16 @@ mean(responses.glm.3 == testing$Procedencia)
 training.modelo.R <- muestra.completa[ Train, ]
 testing.modelo.R <- muestra.completa[ -Train, ]
 
-modelo.completo <- glm(Procedencia ~ ., data=training.modelo.R, na.action="na.omit", family=binomial(link="logit"))
+modelo.completo <- glm(Procedencia ~ 1, data=training.modelo.R, na.action="na.omit", family=binomial(link="logit"))
 
 modelo.auto <- step(
   modelo.completo,
-  direction = "backward"
+  direction = "forward",
+  scope=list(upper=~.,lower=~1),
+  trace = TRUE,
+  steps = 3
 )
 
-print(modelo.auto$coefficients)
 
 library(pROC)
 
