@@ -105,14 +105,14 @@ tabla <- data.frame(Procedencia=datos.todos$Procedencia,Localidad=datos.todos$Lo
 # http://www.uaaan.mx/~jmelbos/muestreo/muapu4.pdf
 
 
-# P # = Probabilidad de Ocurrencia del Fenómeno Estudiado
-# Q  = Probabilidad de que no Ocurra el Fenómeno (q = 1 – p)
-# Varianza = P*Q
-Varianza =  # CALCULAR .... 
+# P # =  25 extranjeros / 86 total 
+# Q  =  61 chilenos / 86. 
+# Varianza = P*Q  =  0.2061
+Varianza =  0.2061 
 N = 86 # numero de la población
 e= 0.05 # Maximo error permitido 5 %
 D = (e^2)/4
-nMuestras = (N*Varianza)/((N-1)*D + Varianza)
+nMuestras = (N*varianza)/((N-1)*D + Varianza)
 nMuestras <- ceiling(nMuestras) # aproximar hacia arriba
 cat("Numero de muestras a utilizar :")
 cat(nMuestras)
