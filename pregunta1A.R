@@ -123,6 +123,17 @@ n.sys <- nMuestras    # numero de muestras #
 index <- sys.sample(N=nrow(tabla), n=n.sys)
 muestra <- tabla[c(index), ]
 frec <- 1:nrow(muestra)
+
+####################################
+#####PROCEDIMIENTO ################
+####################################
+
+# Se tiene una "tabla de dos vías"  que registra las
+# frecuencias observadas para las posibles combinaciones de dos
+# variables categóricas.  Para esto existe un procedimiento χ^2, que se le conoce de forma 
+# Prueba χ^2 de Independencia. En donde hay dos factores ("Lugara a Visitar" y "Procedencia")
+# que se miden en una misma población
+
 # Aggregate crea una tabla que cuenta (con función length) las frecuencias de cada categoría 
 # a partir de datos en forma larga.
 frecuencias <- aggregate(frec ~ Procedencia + Localidad, data = muestra, FUN = length)
@@ -154,34 +165,25 @@ rownames(table.p1) <- c("Chileno", "Extranjero")
 chi.boot <- function(data, indices){
   frec <- 1:nrow(data)
   data <-  data[c(indices), ]
-  p1.1 <- aggregate(frec ~ Procedencia + Localidad, data = data, FUN = length)
-  vicuña <- p1.1[c(which(p1.1$Localidad == "Vicuña")), "frec"]
-  higuera <- p1.1[c(which(p1.1$Localidad == "La Higuera")), "frec"]
-  serena <- p1.1[c(which(p1.1$Localidad == "La Serena")), "frec"]
-  table.p1 <- data.frame(Vicuña=vicuña, "La Higuera"=higuera, "La Serena"=serena)
-  rownames(table.p1) <- c("Chileno", "Extranjero")
-  chi <- chisq.test(table.p1)
-  return(chi$statistic)
+  p1 <- aggregate(frec ~ Procedencia + Localidad, data = data, FUN = length)
+  vicuña <- p1[c(which(p1$Localidad == "Vicuña")), "frec"]
+  higuera <- p1[c(which(p1$Localidad == "La Higuera")), "frec"]
+  serena <- p1[c(which(p1$Localidad == "La Serena")), "frec"]
+  tabla.obs <- data.frame(vicuña, higuera, serena)
+
+  margen.fila <- apply(tabla.obs, 1, sum)
+  margen.columna <- apply(tabla.obs, 2, sum)
+  n <- sum(tabla.obs)
+  tabla.esp <- margen.fila %*% t(margen.columna) / n
+  difs <- (tabla.obs - tabla.esp)^2 / tabla.esp
+  chi.cuadrado <- sum(difs)
+  return(chi.cuadrado)
 }
 
 # Se calcula el bootstraping sobre la cantidad de repeticion n.perm
 n.perm <- 1000
 bootobj <- boot(muestra, chi.boot, R = n.perm)
 distribucion <- bootobj$t
-
-
-
-
-####################################
-#####PROCEDIMIENTO ################
-####################################
-
-
-# Se tiene una "tabla de dos vías"  que registra las
-# frecuencias observadas para las posibles combinaciones de dos
-# variables categóricas.  Para esto existe un procedimiento χ^2, que se le conoce de forma 
-# Prueba χ^2 de Independencia. En donde hay dos factores ("Lugara a Visitar" y "Procedencia")
-# que se miden en una misma población
 
 cat("\n")
 
@@ -192,16 +194,54 @@ cat("HA: la procedencia incide en el lugar a visitar  \n")
 # es decir 95% confianza.
 alpha <- 0.05 
 
-# Ahora con la función chisq.test de R:
-
+# Ahora con la función chisq.test de R, se obtiene el estadístico observado
 observado <- chisq.test(table.p1)$statistic
-count <- sum(distribucion > observado)
-p.value <- (count + 1)/(n.perm + 1)
-p.95 <- (1 - alpha)*n.perm
+
+# Se grafica en histograma la distribución chi cuadrado con bootstrapping
+# La línea azul muestra el estadístico observado
+# La línea roja muestra el extremo del intervalo de confianza (percentil 95)
+grafico <- gghistogram(
+  data = data.frame(Chisqr = c(observado, distribucion)),
+  x = "Chisqr",
+  fill = "orange",
+  xlab = "Estadístico Chi cuadrado",
+  ylab = "Frecuencia",
+  title = "Remuestreo Bootstrap chi cuadrado",
+  bins = 40
+)
+grafico <- grafico + geom_vline(
+  xintercept = observado,
+  linetype = "solid", color = "blue"
+)
+
+# Se obtiene el percentil 95 del número de remuestreo + 1 (el observado)
+# Se reordena la distribución y encuentra el punto crítico
+p.95 <- round((1 - alpha)*n.perm + 1, 1)
 distribucion <- sort(distribucion)
 limit <- distribucion[p.95]
 
-# Se grafica y se muestran los valores observados y obtenidos
-hist(distribucion, breaks = 25)
-abline(v=observado, col="blue")
-abline(v=limit, col="red")
+# Y se incluye en el gráfico
+grafico <- grafico + geom_vline(
+  xintercept = limit,
+  linetype = "solid", color = "red"
+)
+
+plot(grafico)
+
+############# P-valor y conclusiones ###################
+
+# Se calcula el p-valor como el porcentaje de estadísticos igual o más significativos
+# que el estadístico observado en la muestra
+count <- sum(distribucion > observado)
+p.value <- (count + 1)/(n.perm + 1)
+
+if(p.value < alpha){
+  cat("La prueba es significativa para una significancia de: ", 1-alpha, " y un p-valor de: ", p.value , "\n")
+  cat("Hay suficiente evidencia para rechazar la hipótesis nula (H0) en favor de la alternativa (HA)\n")
+  cat("Se concluye que la localidad donde una persona verá el eclipse es dependiente de la procedencia (Chileno o Extranjero)")
+} else {
+  cat("La prueba no es significativa para una significancia de: ", 1-alpha, " y un p-valor de: ", p.value ,"\n")
+  cat("No hay suficiente evidencia para rechazar la hipótesis nula\n")
+  cat("Se concluye que la localidad donde una persona verá el eclipse es independiente de la procedencia (Chileno o Extranjero)")
+}
+
