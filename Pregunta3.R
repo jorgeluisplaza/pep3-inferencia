@@ -1,5 +1,7 @@
 library(stats)
 library(ggpubr)
+library(caret)
+library(pROC)
 
 # Indicar directorio del archivo .csv
 #dir <- "C:/Users/Acer/Desktop/pep3/pep3-inferencia"
@@ -47,12 +49,11 @@ muestra.extranjeros <- tabla[ indices.extranjeros, ]
 muestra <- rbind(muestra.chilenos, muestra.extranjeros)
 
 # Para realizar el modelo automático de R
-muestra.completa.chilenos <- datos.todos[ indices.extranjeros, ]
+muestra.completa.chilenos <- datos.todos[ indices.chilenos, ]
 muestra.completa.extranjeros <- datos.todos[ indices.extranjeros, ]
 muestra.completa <- rbind(muestra.completa.chilenos, muestra.completa.extranjeros)
 
-muestra.chilenos <- tabla[ sample( chilenos, nmax), ]
-muestra.extranjeros <- tabla[ sample( extranjeros, nmax), ]
+
 
 
 
@@ -70,7 +71,7 @@ modelo.edad <- glm(
   na.action = na.omit
 )
 
-print(summary(modelo))
+print(summary(modelo.edad))
 
 comparacion <- anova(nulo, modelo.edad, test = "LRT")
 print(comparacion)
@@ -158,7 +159,7 @@ print(output[sospechosos, ])
 # Como se tienen todos estos casos sospechosos se debe analizar que hacer con ellos
 # Sacarlos del modelo o dejarlos.
 
-# Para este caso, los casos atípicos fueron extranjeros con altos presupuestos
+# Para este caso, los casos at�?picos fueron extranjeros con altos presupuestos
 # o chilenos de mucha edad.
 
 
@@ -248,11 +249,10 @@ print(round(tols, 2))
 
 ######################################################
 
-# Evaluación del modelo logístico usando predicciones
+# Evaluación del modelo log�?stico usando predicciones
 # Se crean los modelos anteriores separando la muestra 
 # en datos de entramiento y prueba
 
-library(caret)
 #Crear particion de muestra con proporcion:
 
 # - 70% datos de entrenamiento
@@ -284,7 +284,7 @@ responses.glm.2 <- ifelse(pred2 < 0.5, "Chileno", "Extranjero")
 responses.glm.3 <- ifelse(pred3 < 0.5, "Chileno", "Extranjero")
 
 # Se realiza una tabla de contingencia para las predicciones. 
-# Los valores de la matríz que no coinciden sus nombres
+# Los valores de la matr�?z que no coinciden sus nombres
 # indican errores de predicción. 
 
 table(responses.glm.1, testing$Procedencia)
@@ -307,23 +307,28 @@ mean(responses.glm.3 == testing$Procedencia)
 
 # Modelo automático de R. A partir del modelo nulo (Constante)
 # Agregar variables predictoras de manera ascendente por pasos.
+# cat("\n\n");stop("*** SIN ERROR ***")
 
 #Es la misma muestra pero incluyendo todas las columnas 
 training.modelo.R <- muestra.completa[ Train, ]
 testing.modelo.R <- muestra.completa[ -Train, ]
 
-modelo.completo <- glm(Procedencia ~ 1, data=training.modelo.R, na.action="na.omit", family=binomial(link="logit"))
+modelo.nulo <- glm(Procedencia ~ 1, data=training.modelo.R, family=binomial(link="logit"))
+modelo.completo <- glm(Procedencia ~ ., data=training.modelo.R, family=binomial(link="logit"))
 
 modelo.auto <- step(
-  modelo.completo,
-  direction = "forward",
-  scope=list(upper=~.,lower=~1),
-  trace = TRUE,
-  steps = 3
+  modelo.nulo,
+  direction = "both",
+  scope=list(lower=modelo.nulo, upper=modelo.completo),
+  trace = TRUE
 )
+print(modelo.auto)
 
 
-library(pROC)
+# cat("\n\n");stop("*** SIN ERROR ***")
+
+
+
 
 
 roc1 <- roc(testing$Procedencia, pred1)
