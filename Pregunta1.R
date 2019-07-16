@@ -50,9 +50,6 @@ datos.todos <- read.csv (
 # Vicente Rivera: d3 = 10
 # Nicolas Alarcon: d4 = 6
 
-
-
-
 ### Pregunta 1 -> Comparacion de dos proporciones, utilizar bootstrapping y muestreo sistematico
 
 # Como se menciona, en la actividad en la Region de Coquimbo se recabaron datos respecto a la procedencia
@@ -140,7 +137,7 @@ abline(v=limit, col="red")
 
 # Dias de nacimiento
 
-# Fernanda Mu?oz: d1 = 4
+# Fernanda Muñoz: d1 = 4
 # Nicolas Gutierrez: d2 = 17
 # Sandra Hernandez: d3 = 26
 # Felipe Vasquez: d4 = 17
