@@ -1,12 +1,12 @@
-# install.packages("ez") # InstalaciÛnn del paquete "Ez"
+# install.packages("ez") # Instalaci√≥nn del paquete "Ez"
 
 
-# install.packages("tidyverse") # InstalaciÛnn del paquete "tidyverse"
+# install.packages("tidyverse") # Instalaci√≥nn del paquete "tidyverse"
 
 
-# install.packages("WRS2") # InstalaciÛn del paquete "WRS2"
+# install.packages("WRS2") # Instalaci√≥n del paquete "WRS2"
 
-# ImportaciÛn de modulo "ez"
+# Importaci√≥n de modulo "ez"
 library(ez)
 
 # Modulos para graficos
@@ -35,9 +35,9 @@ library(WRS2)
 set.seed(10*6+10*26)
 
 
-#### Pregunta 2 -> ComparaciÛn de mas de 2 medias
+#### Pregunta 2 -> Comparaci√≥n de mas de 2 medias
 
-# En la actividad realizada en la regiÛn de Coquimbo se recabaron datos 
+# En la actividad realizada en la regi√≥n de Coquimbo se recabaron datos 
 # respecto a la edad de los turistas y cuanto iban a gastar por dia.
 # Entonces see quiere saber si las personas en promedio gastaron lo
 # mismo en esta visita a La serena:
@@ -63,20 +63,43 @@ set.seed(10*6+10*26)
 
 
 ####---------------------------------------------------------------####
-#### PARTE 1 : MUESTREO ESTRATIFICADO CON AFIJACI”N PROPORCIONAL   ####
+#### PARTE 1 : MUESTREO ESTRATIFICADO CON AFIJACI√ìN PROPORCIONAL   ####
 ####---------------------------------------------------------------####
 
 
 
 
 # Antes de continuar con el procedimiento, es necesario tener claro
-# la muestra que se utilizar·.
+# la muestra que se utilizar√°.
 # Una buena forma de obtener un numero de muestras es utilizar
-# un muestreo estratificado con afijaciÛn proporcional.
+# un muestreo estratificado con afijaci√≥n proporcional.
+# Concepto: MUESTREO ESTRATIFICADO
+# El muestreo es una herramienta de investigaci√≥n cient√≠fica, cuya funci√≥n
+# b√°sica es determinar que parte de una poblaci√≥n debe examinarse, con la finalidad de hacer
+# inferencias sobre dicha poblaci√≥n. El muestreo estratificado es una t√©cnica de muestreo 
+# probabil√≠stico en donde el investigador divide a toda la poblaci√≥n en diferentes subgrupos 
+# o estratos. Luego, selecciona aleatoriamente a los sujetos finales de los diferentes estratos 
+# en forma proporcional. 
+# ¬øPor qu√© conviene utilizar este tipo de muestreo?
+# -> Puede entregar informacion mas precisa al reducir el error por cada estrato.
+# -> Se obtienen muestras m√°s representativas
+# -> Permite inferir para cada estrato de manera independiente
 
+# Condiciones: 
+# -> La poblaci√≥n est√° dividida en estratos (subpoblaciones)
+# -> Se conocen las proporciones o tamalos de los distintos estratos
 
-
-
+# Muestreo estratificado: Con afijacion proporcional
+# Este tipo de muestreo el tama√±o de cada estrato en la muestra es proporcional al tama√±o de cada
+# estrato en la poblaci√≥n.
+#                                 n_{h} = n * W_{h}
+#
+# Donde: 
+# n_{h} : Tama√±o del estrato h
+# n : tama√±o de la poblaci√≥n
+# W_{h} : Peso del estrato h ;     W_{h} = N_{h}
+#                                        -------
+#                                           N  
 
 #-----------------------#
 # 1.1  Captura de Datos #
@@ -132,10 +155,10 @@ datos_p2.frame <- datos_edad_ingresos %>%
 #                 86    
 
 # Dado que la encuesta no se encontraron personas de edad mayor a 
-# 76 aÒos, el intervalo 4 o grupo 4 no existe. 
+# 76 a√±os, el intervalo 4 o grupo 4 no existe. 
 
 #---------------------------------------------------------#
-# 1.2  AplicaciÛn de la formula de muestreo estratificado #
+# 1.2  Aplicaci√≥n de la formula de muestreo estratificado #
 #---------------------------------------------------------#
 
 
@@ -149,8 +172,8 @@ datos_p2.frame <- datos_edad_ingresos %>%
 #                                   N
 # Donde :
 #
-#     N  = TamaÒo total.
-#     Ni = TamaÒo del estrato i.
+#     N  = Tama√±o total.
+#     Ni = Tama√±o del estrato i.
 #     Pi = Peso del estrato i. Se obtiene dividiendo Ni / N .
 #     Qi = Complemento de Pi. Se calcula como  (1-Pi).
 #     E = Es el error. Esta dado por :
@@ -168,7 +191,7 @@ datos_p2.frame <- datos_edad_ingresos %>%
 
 # Primeramente comencemos armando el numerador.
 
-# Definamos entonces, el tamaÒo de N que es la suma de estratos: 
+# Definamos entonces, el tama√±o de N que es la suma de estratos: 
 N <- sum(datos_p2.frame$Cantidad)
 
 # Comenzamos a agregarles datos al frame, como el peso de
@@ -179,14 +202,14 @@ datos_p2.frame$Peso <- ( datos_p2.frame$Cantidad  /
                                sum(datos_p2.frame$Cantidad) 
 )
 
-# AÒadimos el complemento del peso, osea 1-peso (Qi):
+# A√±adimos el complemento del peso, osea 1-peso (Qi):
 
 datos_p2.frame$Complemento <- (1 - datos_p2.frame$Peso)
 
 # Con esto ya tenemos los datos necesarios para el numerador
-# en la formula para obtener el tamaÒo de la muestra.
+# en la formula para obtener el tama√±o de la muestra.
 
-# entonces el numerador estar· dado por : S( Ni * Pi * Qi )
+# entonces el numerador estar√° dado por : S( Ni * Pi * Qi )
 
 datos_p2.frame$NiPiQi <- (datos_p2.frame$Cantidad *
                             datos_p2.frame$Peso *
@@ -229,7 +252,7 @@ alpha <- 0.05
 
 error <- ( error.maximo^2 / (qnorm(1-(alpha/2)))^2 )
 
-# recordemos que el total de la poblaciÛn es N.
+# recordemos que el total de la poblaci√≥n es N.
 
 # entonces ya con esto tenemos nuestro denominador:
 
@@ -266,7 +289,7 @@ datos_p2.frame$Muestras <- (datos_p2.frame$Peso *
 #-------------------------------------------#
 
 
-# El redondeo actual est· dado, por la funcion de redondeo al valor de 5
+# El redondeo actual est√° dado, por la funcion de redondeo al valor de 5
 
 redondeo_edad.actual <- round(datos_p2.frame$Muestras)
 
@@ -289,7 +312,7 @@ datos_p2.frame$Muestras <- redondeo_edad.actual
 
 
 #-----------------------------#
-# 1.4  CreaciÛn de la Muestra #
+# 1.4  Creaci√≥n de la Muestra #
 #-----------------------------#
 
 
@@ -297,28 +320,28 @@ datos_p2.frame$Muestras <- redondeo_edad.actual
 # por lo que podemos crear nuestra muestra: 
 
 
-# con los datos que tenimos de antes, que es nuestra poblaciÛn
+# con los datos que tenimos de antes, que es nuestra poblaci√≥n
 
-# datos_edad_ingresos = poblaciÛn
+# datos_edad_ingresos = poblaci√≥n
 
 # Escogeremosal azar con la seed fijada
 
 #Creamos una variable datos_p2.muestra
-data.muestra.p2 <- datos_edad_ingresos %>% # De la poblaciÛn 
+data.muestra.p2 <- datos_edad_ingresos %>% # De la poblaci√≥n 
   
   group_by(Intervalo) %>% # Agrupapos por alimentos
   
   nest() %>% # dejamos todos los datos en 1 fila por alimento
   
-  mutate(n=datos_p2.frame$Muestras) %>% # fijamos el tamaÒo 
+  mutate(n=datos_p2.frame$Muestras) %>% # fijamos el tama√±o 
   # de cada muestra
   
-  mutate(samp = map2(data, n, sample_n)) %>% # Mapeamos una funciÛn 
-  # de sample segun tamaÒo
+  mutate(samp = map2(data, n, sample_n)) %>% # Mapeamos una funci√≥n 
+  # de sample segun tama√±o
   
-  select(Intervalo, samp) %>% # Aplicamos la funciÛn 
+  select(Intervalo, samp) %>% # Aplicamos la funci√≥n 
   
-  unnest() %>% # revertimos la agrupaciÛn de filas (ahora hay n filas)
+  unnest() %>% # revertimos la agrupaci√≥n de filas (ahora hay n filas)
   
   as.data.frame() # volvemos a transformar a datos_p2 frame
 
@@ -326,7 +349,7 @@ data.muestra.p2 <- datos_edad_ingresos %>% # De la poblaciÛn
 
 
 ####-------------------------------------------####
-#### PARTE 2 : APLICACI”N DEL METODO ROBUSTO   ####
+#### PARTE 2 : APLICACI√ìN DEL METODO ROBUSTO   ####
 ####-------------------------------------------####
 
 # Como veiamos en la lectura, el paquete "WRS2" nos facilita varias 
@@ -369,7 +392,7 @@ normalidad.p2 <- ggqqplot(
   color = "Intervalo"
 )
 
-# se aÒaden todos 
+# se a√±aden todos 
 normalidad.p2 <- normalidad.p2 + facet_wrap(~ Intervalo)
 print(normalidad.p2)
 
@@ -390,11 +413,11 @@ print(alimentos.diagrama.p2)
 
 # Conciderando esto podemos decir que el metodo robusto nos viene como 
 # anillo al dedo. Ya que como los datos son muy distintos o atipicos.
-# La medicion cambiar· si se le agrega o quita un dato.
+# La medicion cambiar√° si se le agrega o quita un dato.
 
 
 #------------------------------#
-# 2.2  AplicaciÛn del metodo   #
+# 2.2  Aplicaci√≥n del metodo   #
 #------------------------------#
 
 # Como la alternativa robusta de ANOVA es, segun las lecturas, es 
@@ -408,8 +431,8 @@ print(alimentos.diagrama.p2)
 # Antes de proceder con el metodo, veamos cuales son las hipotesis
 # a contrastar : 
 
-# H0 =  µ_ingresos_inter_1 = µ_ingresos_inter_2 =
-#       µ_ingresos_inter_3
+# H0 =  ¬µ_ingresos_inter_1 = ¬µ_ingresos_inter_2 =
+#       ¬µ_ingresos_inter_3
 
 # H1 = Al menos un par de medias son distintas. 
 
@@ -419,7 +442,7 @@ print(alimentos.diagrama.p2)
 # Como siempre manejaremos este estudio con un error del 5%. 
 
 
-# 2.2.2 AplicaciÛn
+# 2.2.2 Aplicaci√≥n
 #-----------------
 
 # entonces finalmente:
@@ -468,5 +491,5 @@ print(prueba_edad.robusta_bootstrap.p2_v2)
 # Esto quiere decir que dado los datos recopilados en el estudio
 # y segun las pruebas hechas, no hay evidencia que nos diga que el
 # promedio de ingresos por persona segun su edad, es distinto
-# Lo que quiere decir que no por tener m·s edad, tengo mas dinero 
+# Lo que quiere decir que no por tener m√°s edad, tengo mas dinero 
 # para gastar. 
