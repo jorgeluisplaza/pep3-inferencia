@@ -87,21 +87,36 @@ tabla <- data.frame(Procedencia=datos.todos$Procedencia,Localidad=datos.todos$Lo
 
 
 # El tamaño de la muestra corresponde al número mínimo necesario para estimar el parámetro poblacional 
-# con la restricción que la diferencia entre el estadístico y el parámetro sea menor que una cantidad 
-# condicionalmente aceptada. Al utilizar Muestreo Sistematico  debemos utilizar la siguiente formula:
+# los factores que inciden en el tamaño de la muestras son el error máximo admisible, el nivel de confianza, 
+# los recursos económicos y la formula para estimar n en muestreo sistematico.
+## REFERENCIAR EL LIBRO PROFE ###  (factores ...)
 
-P= 0.5 # = Probabilidad de Ocurrencia del Fenómeno Estudiado
-Q = 0.5 # = Probabilidad de que no Ocurra el Fenómeno (q = 1 – p)
+
+
+#  El error maximo admisible elegido fue de 0.05 debido a que como tenemos pocos datos, debemos ser menos estricto con el resultado final.
+#  El nivel de confianza es de 0.05 debido a que  es razonable para esta prueba, dado la cantidad de datos obtenidos y lo que se busca (no critico).
+#  Recursos economicos: Durante el estudio, el recurso económico si fue un factor, debido a que nos permitió solo estar un dia en terreno para realizar las 
+#  encuestas. Esto influyó en la cantidad de encuestas tomadas, es decir, nuestro tamaño de población a evaluar.
+
+
+# El Muestreo Sistematico utiliza una formula para obtener el tamaño de la muestra para estimar la porción
+
+# Formula obtenida:  VI Muestreo Sistemático, Dr. Jesús Mellado Bosque
+# http://www.uaaan.mx/~jmelbos/muestreo/muapu4.pdf
+
+
+# P # = Probabilidad de Ocurrencia del Fenómeno Estudiado
+# Q  = Probabilidad de que no Ocurra el Fenómeno (q = 1 – p)
+# Varianza = P*Q
+Varianza =  # CALCULAR .... 
 N = 86 # numero de la población
 e= 0.05 # Maximo error permitido 5 %
 D = (e^2)/4
-nMuestras = (N*P*Q)/((N-1)*D + P*Q)
+nMuestras = (N*Varianza)/((N-1)*D + Varianza)
 nMuestras <- ceiling(nMuestras) # aproximar hacia arriba
 cat("Numero de muestras a utilizar :")
 cat(nMuestras)
 
-# Formula obtenida:  VI Muestreo Sistemático, Dr. Jesús Mellado Bosque
-# http://www.uaaan.mx/~jmelbos/muestreo/muapu4.pdf
 
 #(D)
 ##### Semillas ####### 
@@ -116,8 +131,27 @@ cat(nMuestras)
 set.seed(256)
 
 
-### EXPLICAR QUE HACER Y COMO FUNCIONA #### 
-#(C)
+# El muestreo sistematico es un tipo de muestreo probabilístico donde se hace una selección aleatoria del primer elemento para la muestra, 
+# y luego se seleccionan los elementos posteriores utilizando intervalos fijos o sistemáticos hasta alcanzar el tamaño de la muestra deseado.
+# Pasos para 
+
+
+# Pasos para la selección de un muestreo sistematico de forma manual # 
+        # Definir la población objetivo.= N 
+        # Determinar el tamaño deseado de la muestra (n)
+        # Definir el marco de muestreo (N)
+        # Calcular el intervalo de muestreo (i) = (N)/(n). 
+        # Seleccionar al azar un número, r, desde  “1”  hasta i.
+        # Selecciona para la muestra, r, r + i, r + 2i, r ,+3i, y así sucesivamente, hasta agotar el marco.
+
+# A nivel técnico, el muestreo sistematico no crea una muestra verdaderamente aleatoria. Sólo la selección del primer elemento de muestreo sistematico es una selección de probabilidad.
+#Una vez que el primer elemento es seleccionado, algunos de los elementos tendrán una probabilidad cero de selección.
+
+#Referencias: https://www.questionpro.com/blog/es/muestreo-sistematico/?fbclid=IwAR1i6WJv2cbS9BWSOGkk09SpyorYuBg6uUFIdgw9OSzLH051AvAKX2nqNA8
+
+
+#  R tiene una función llamada sys.sample que selecciona una muestra sistemática de tamaño n.
+
 # Se utiliza muestreo sistematico para el calculo de la muestra
 n.sys <- nMuestras    # numero de muestras # 
 index <- sys.sample(N=nrow(tabla), n=n.sys) ##  ***************# 
@@ -125,10 +159,13 @@ muestra <- tabla[c(index), ]##  ***************# 
 frec <- 1:nrow(muestra)##  ***************# 
 p1.1 <- aggregate(frec ~ Procedencia + Localidad, data = muestra, FUN = length)
 
+
+## .. MOSTRAR MUESTRAS QUE SE TOMAR ...  ### ...
 ### PLOTEAR LOS RESULTADOS ### 
 
 
 # Se calculan la cantidad de personas en las tres localidades 
+
 vicuña <- p1.1[c(which(p1.1$Localidad == "Vicuña")), "frec"]
 higuera <- p1.1[c(which(p1.1$Localidad == "La Higuera")), "frec"]
 serena <- p1.1[c(which(p1.1$Localidad == "La Serena")), "frec"]
@@ -142,7 +179,19 @@ rownames(table.p1.1) <- c("Chileno", "Extranjero")
 # El equipo debe usar bootstrapping para responder su pregunta de investigación con la muestra obtenida.# 
 
 
+# Boostrap: Es una muestra de remuestreo de datos dentro de una muestra aleatoria. La principal utilidad del empleo del bootstrap es reducir el sesgo dentro de #análisis o, en otras palabras, aproximar la varianza gracias a la realización de remuestreos aleatorios de la muestra inicial y no de la población.
+# el procedimiento en que se basa el bootstrapping es simplemente la creación de un gran número de muestras reposicionando los datos tomando como referencia una muestra poblacional inicial. Esta técnica resulta especialmente útil en aquellas situaciones en las que las muestras con las que se cuenta son pequeñas
+# Como en este caso donde las muestras a considerar son pequeñas.
+
+
+
 # Se define estadistico para el bootstraping
+# Boostrap 
+
+
+
+.............   /// Vicente explicar // ..
+
 foo <- function(data, indices){
   frec <- 1:nrow(data)
   data <-  data[c(indices), ]
@@ -155,6 +204,7 @@ foo <- function(data, indices){
   chi <- chisq.test(table.p1.1)
   return(chi$statistic)
 }
+
 
 # Se calcula el bootstraping sobre la cantidad de repeticion n.perm
 n.perm <- 1000
@@ -171,26 +221,28 @@ distribucion <- bootobj$t
 # Se tiene una "tabla de dos vías"  que registra las
 # frecuencias observadas para las posibles combinaciones de dos
 # variables categóricas.  Para esto existe un procedimiento χ^2, que se le conoce de forma 
-# Prueba χ^2 de Independencia. En donde hay dos factores ("Lugara a Visitar" y "Procedencia")
+# Prueba χ^2 de Independencia. En donde hay dos factores ("Lugar a Visitar" y "Procedencia")
 # que se miden en una misma población
 
 cat("\n")
 
-cat("HO: el lugar  a visitar no depende de la precedencia de la persona.")
+cat("HO: la procedencia de una persona no depende del lugar a visitar")
 cat("HA: la procedencia incide en el lugar a visitar  \n")
 
-# Se define un alpha de 0.05
-alpha <- 0.05  es decir 95% confianza.
+
+# Se define un alpha de 0.05 estandar debido a que  es razonable para esta prueba, dado la cantidad de datos obtenidos y lo que se busca (no critico).
+alpha <- 0.05  # es decir 95% confianza.
 
 
-# Ahora con la función chisq.test de R:
+# En r la función chisq.test realiza una prueba chi-cuadrado, utilizaremos esto para realizar una prueba de independecia  χ^2.
+
 
 
 observado <- chisq.test(table.p1.1)$statistic
-count <- sum(distribucion > observado)
-p.value <- (count + 1)/(n.perm + 1)
-p.95 <- (1 - alpha)*n.perm
-distribucion <- sort(distribucion)
+count <- sum(distribucion > observado) 
+p.value <- (count + 1)/(n.perm + 1) #p valor 
+p.95 <- (1 - alpha)*n.perm. # confianza 
+distribucion <- sort(distribucion) 
 limit <- distribucion[p.95]
 
 
@@ -198,5 +250,8 @@ limit <- distribucion[p.95]
 hist(distribucion, breaks = 25)
 abline(v=observado, col="blue")
 abline(v=limit, col="red")
+
+
+
 
 # ************* FIN PREGUNTA 1 FORMA A *********************** #

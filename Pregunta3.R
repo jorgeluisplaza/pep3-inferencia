@@ -1,15 +1,18 @@
-
 library(stats)
 library(ggpubr)
 
 # Indicar directorio del archivo .csv
-dir <- ""
+#dir <- "C:/Users/Acer/Desktop/pep3/pep3-inferencia"
+
+# Se hace calculo de la semilla con respecto a los dias de nacimiento de los investigadores mencionados previamente
+# Semilla: d1 * d4 + d2 * d3 = 10 * 6 + 13 * 10 = 60 + 130 = 190
+set.seed(190)
 
 # Indicar nombre del archivo
 basename <- "eclipse2019.csv"
 
 # Se lee el archivo   
-#file <- file.path(basename)
+#file <- file.path(dir,basename)
 
 # Se guardan los datos en una tabla
 datos.todos <- read.csv (
@@ -32,22 +35,25 @@ table(tabla$Procedencia)
 chilenos <- c(which(tabla$Procedencia == "Chileno"))
 extranjeros <- c(which(tabla$Procedencia == "Extranjero"))
 # Se deben tener una cantidad parecida (igual) entre chilenos y extranjeros
-proporcion <- 0.8
+proporcion <- 0.9
 nmax <- min( length(extranjeros), length(chilenos))*proporcion
 
-# Se utiliza muestreo simple aleatorio para la obtención de la muestra
+# Se utiliza muestreo simple aleatorio para la obtencion de la muestra
+indices.chilenos <- sample( chilenos, nmax)
+indices.extranjeros <- sample( extranjeros, nmax)
+
+muestra.chilenos <- tabla[ indices.chilenos, ]
+muestra.extranjeros <- tabla[ indices.extranjeros, ]
+muestra <- rbind(muestra.chilenos, muestra.extranjeros)
+
+# Para realizar el modelo automático de R
+muestra.completa.chilenos <- datos.todos[ indices.extranjeros, ]
+muestra.completa.extranjeros <- datos.todos[ indices.extranjeros, ]
+muestra.completa <- rbind(muestra.completa.chilenos, muestra.completa.extranjeros)
+
 muestra.chilenos <- tabla[ sample( chilenos, nmax), ]
 muestra.extranjeros <- tabla[ sample( extranjeros, nmax), ]
 
-muestra <- rbind(muestra.chilenos, muestra.extranjeros)
-
-#box.noches <- ggboxplot(
-#  data = muestra,
-#  x = "Procedencia", y = "Valor", 
-#  color = "Noches", legend = "none"
-#)
-#pbf <- facet(box.noches, facet.by = "Noches", scales = "free")
-#plot(box.noches)
 
 
 nulo <- glm(
@@ -55,43 +61,31 @@ nulo <- glm(
   family = binomial(link = "logit"),
   data = muestra
 )
+print(summary(nulo))
 
-modelo <- glm(
+modelo.edad <- glm(
   Procedencia ~ Edad, 
   family=binomial(link='logit'), 
   data=muestra, 
   na.action = na.omit
 )
 
-comparacion <- anova(nulo, modelo, test = "LRT")
+print(summary(modelo))
+
+comparacion <- anova(nulo, modelo.edad, test = "LRT")
 print(comparacion)
 
-nuevo <- update(modelo, . ~ . + Noches)
+modelo.edad.noches <- update(modelo.edad, . ~ . + Noches)
 
-comparacion <- anova(modelo, nuevo, test = "LRT")
+comparacion <- anova(modelo.edad, modelo.edad.noches, test = "LRT")
 print(comparacion)
 
-nuevo2 <- update(modelo, . ~ . + Presupuesto)
+modelo.edad.presupuesto <- update(modelo.edad, . ~ . + Presupuesto)
 
-comparacion <- anova(modelo, nuevo2, test = "LRT")
+comparacion <- anova(modelo.edad, modelo.edad.presupuesto, test = "LRT")
 print(comparacion)
 
-predicted <- predict(modelo, muestra, type="response")  # predicted scores
-
-plot(predicted)
-
-# cat("\n\n");stop("*** SIN ERROR ***")
-
-
-# Comentarios de aqui hacia abajo siguen el mismo esquema del script del profe (hasta ahora ocurren
-# las mismas situaciones del script del profe)
-
-# Se queda con el modelo Procedencia ~ Edad + Presupuesto tras realizar la comparacion
-
-modelo <- nuevo2
-
-
-#Comentarios de aqui hacia abajo siguen el mismo esquema del script del profe
+modelo <- modelo.edad.presupuesto
 
 # Se queda con el modelo Procedencia ~ Edad + Presupuesto
 # Revision de casos sospechosos (copia barata del script del profe)
@@ -131,13 +125,15 @@ print(rownames(subdatos[sospechosos2, ]))
 # Tambien se recomienda revisar casos cuyo "leverage" sea mas del doble
 # o triple del leverage promedio: (k + 1)/n
 leverage.promedio <- ncol(subdatos) / nrow(muestra)
-sospechosos3 <- which(output[["leverage"]] > leverage.promedio)
+sospechosos3 <- which(output[["leverage"]] > leverage.promedio*2)
 sospechosos3 <- sort(sospechosos3)
 cat("\n\n")
 cat("Residuales con levarage fuera de rango (> ")
 cat(round(leverage.promedio, 3), ")", "\n", sep = "")
 cat("--------------------------------------\n")
 print(rownames(subdatos[sospechosos3, ]))
+
+# Existen algunos datos con más del doble del leverage promedio
 
 # Tambien podriamos revisar DFBeta, que deberia ser < 1.
 sospechosos4 <- which(apply(output[["dfbeta"]] >= 1, 1, any))
@@ -147,9 +143,6 @@ cat("\n\n")
 cat("Residuales con DFBeta sobre 1\n")
 cat("-----------------------------\n")
 print(rownames(subdatos[sospechosos4, ]))
-
-# Puede verse que los casos sospechosos mas o menos se repiten con cada
-# estadistica. Revisemos estos casos.
 
 sospechosos <- c(sospechosos1, sospechosos2, sospechosos3, sospechosos4)
 sospechosos <- sort(unique(sospechosos))
@@ -163,9 +156,10 @@ cat("\n\n")
 print(output[sospechosos, ])
 
 # Como se tienen todos estos casos sospechosos se debe analizar que hacer con ellos
-# Sacarlos del modelo o dejarlos
+# Sacarlos del modelo o dejarlos.
 
-# No se que hacer con esos casos
+# Para este caso, los casos atípicos fueron extranjeros con altos presupuestos
+# o chilenos de mucha edad.
 
 
 # CONDICIONES DE MODELO DE REGRESION LOGISTICA
@@ -191,25 +185,10 @@ cat("Modelo con interacciones logaritmicas\n")
 cat("-------------------------------------\n")
 print(summary(modelo.log))
 
-
-
-# 2) Independencia del error (residuales)
-# 
-# Es se traduce a que no ha de existir autocorrelacion en los terminos
-# residuales. Esto puede probarse con una prueba estadistica especifica
-# conocida con el nombre de sus autores: Durbin�Watson test, que
-# verifica si dos residuales adyacentes (un retardo) estan
-# correlacionados.
-# [J Durbin, GS Watson (1950). Testing for Serial Correlation in Least
-# Squares Regression, I". Biometrika. 37(3-4):409-428;
-# Durbin, GS Watson (1951). Testing for Serial Correlation in Least
-# Squares Regression, II". Biometrika. 38(1-2):159-179]
-
-# En R, es facil revisar mas retardos, por ejemplo hasta 5 retardos:
-
 library(car)
+# Requiere instalar package "rlang" adicionalmente
 cat("\n\n")
-cat("Prueba de Durbin�Watson para autocorrelaciones entre errores\n")
+cat("Prueba de Durbin?Watson para autocorrelaciones entre errores\n")
 cat("------------------------------------------------------------\n")
 print(durbinWatsonTest(modelo, max.lag = 5))
 
@@ -220,7 +199,7 @@ print(durbinWatsonTest(modelo, max.lag = 5))
 #
 # Asi, debemos dudar del modelo obtenido.
 # 
-# En todo caso, debe tenerse cuidado con la Prueba de Durbin�Watson,
+# En todo caso, debe tenerse cuidado con la Prueba de Durbin?Watson,
 # puesto que depende del orden de los datos, por lo que reordenando
 # se podria tener valores distintos. Aunque en este caso, es poco
 # probable que cambie la conclusion de que existe autocorrelacion.
@@ -262,7 +241,110 @@ print(round(tols, 2))
 # Segun los resultados encontrados:
 #   VIF = 1           => bajo el umbral propuesto (VIF < 10)
 #   VIF promedio = 1  => en el limite, por lo que puede existir sesgo
-#   Tolerancia = 1    => sobre los valores propuestos (T > 0.4 siendo exigentes)
+#   Tolerancia = 0.97    => sobre los valores propuestos (T > 0.4 siendo exigentes)
 
 # Por lo tanto se concluye que no se esta presente frente a multicolinealidad
 # (aunque puede existir sesgo)
+
+######################################################
+
+# Evaluación del modelo logístico usando predicciones
+# Se crean los modelos anteriores separando la muestra 
+# en datos de entramiento y prueba
+
+library(caret)
+#Crear particion de muestra con proporcion:
+
+# - 70% datos de entrenamiento
+# - 30% datos de prueba
+Train <- createDataPartition(muestra$Procedencia, p = 0.7, list=FALSE)
+
+training <- muestra[ Train, ]
+testing <- muestra[ -Train, ]
+
+# Modelo número 1: Procedencia ~ Edad
+modelo.glm.1 <- glm(Procedencia ~ Edad, data = training, family="binomial"(link="logit"))
+
+# Modelo número 2: Procedencia ~ Edad + Noches
+modelo.glm.2 <- glm(Procedencia ~ Edad + Noches, data = training, family="binomial"(link="logit"))
+
+# Modelo número 3: Procedencia ~ Edad + Presupuesto
+modelo.glm.3 <- glm(Procedencia ~ Edad + Presupuesto, data = training, family="binomial"(link="logit"))
+
+# Se obtiene la probabilidad predicha por el modelo.
+# Retorna lista con las probabilidades del 
+pred1 <- predict(modelo.glm.1, newdata=testing, type="response")
+pred2 <- predict(modelo.glm.2, newdata=testing, type="response")
+pred3 <- predict(modelo.glm.3, newdata=testing, type="response")
+
+# Si la predicción da menor que 50%, se responde "Chileno" (0)
+# de lo contrario "Extranjero" (1)
+responses.glm.1 <- ifelse(pred1 < 0.5, "Chileno", "Extranjero")
+responses.glm.2 <- ifelse(pred2 < 0.5, "Chileno", "Extranjero")
+responses.glm.3 <- ifelse(pred3 < 0.5, "Chileno", "Extranjero")
+
+# Se realiza una tabla de contingencia para las predicciones. 
+# Los valores de la matríz que no coinciden sus nombres
+# indican errores de predicción. 
+
+table(responses.glm.1, testing$Procedencia)
+table(responses.glm.2, testing$Procedencia)
+table(responses.glm.3, testing$Procedencia)
+
+# Se calcula el porcentaje de aciertos del modelo para el conjunto
+# de pruebas. El modelo elegido fue el tercero (Edad + Presupuesto)
+# que obtuvo un 91.7% de acierto.
+# En este caso es muy pequeño (12 casos), por lo que no resulta
+# una medida confiable. 
+mean(responses.glm.1 == testing$Procedencia)
+mean(responses.glm.2 == testing$Procedencia)
+mean(responses.glm.3 == testing$Procedencia)
+
+
+
+# Likelihood Ratio Test
+# Lo mismo que esta mas arriba con los casos sospechosos, VIF y condiciones (debiese ser lo mismo)
+
+# Modelo automático de R. A partir del modelo nulo (Constante)
+# Agregar variables predictoras de manera ascendente por pasos.
+
+#Es la misma muestra pero incluyendo todas las columnas 
+training.modelo.R <- muestra.completa[ Train, ]
+testing.modelo.R <- muestra.completa[ -Train, ]
+
+modelo.completo <- glm(Procedencia ~ 1, data=training.modelo.R, na.action="na.omit", family=binomial(link="logit"))
+
+modelo.auto <- step(
+  modelo.completo,
+  direction = "forward",
+  scope=list(upper=~.,lower=~1),
+  trace = TRUE,
+  steps = 3
+)
+
+
+library(pROC)
+
+
+roc1 <- roc(testing$Procedencia, pred1)
+roc1
+plot(roc1)
+
+roc2 <- roc(testing$Procedencia, pred2)
+roc2
+plot(roc2)
+
+roc3 <- roc(testing$Procedencia, pred3)
+roc3
+plot(roc3)
+
+roc.test(roc1,roc2)
+roc.test(roc2,roc3)
+roc.test(roc1,roc3)
+
+# 1- Procedencia ~ Edad
+# 2- Procedencia ~ Edad + Presupuesto
+# 3- Procedencia ~ Edad + Presupuesto + Noches
+
+# AUC de modelo 1 es menor a 2 y 3
+# AUC de 2 y 3 son iguales
