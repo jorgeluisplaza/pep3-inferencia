@@ -24,40 +24,48 @@ library(purrr)
 library(WRS2)
 
 
-# GRUPO 1
-
-# Fernanda Muñoz: d1 = 4
-# Jorge Plaza: d2 = 13
-# Felipe Vasquez: d3 = 17
-# Nicolas Gutierrez: d4 = 17
 
 set.seed(4*17+13*17)
 
 
 #### Pregunta 2 -> Comparación de mas de 2 medias
 
-# En la actividad realizada en la región de Coquimbo se recabaron datos 
-# respecto a como los turistas se iban a alimentar durante su estadia. 
+
+#Pregunta 2
+#El equipo debe plantear una pregunta de investigación interesante que requiera la comparación de más de
+#dos medias.
+#Definiendo valores razonables (y bien justificados) para los diferentes factores para este estudio, el equipo
+#ha de determinar el tamaño de muestra requerido para realizar esta comparación estadística utilizando
+#muestreo estratificado con afijación proporcional.
+#Usando la semilla d1·d3+ d2·d4, el equipo debe aplicar este muestreo en los datos de Coquimbo.
+#El equipo debe usar un método robusto para responder su pregunta de investigación.
+
+
+
+########
+#El equipo debe plantear una pregunta de investigación interesante que requiera la comparación de más de
+#dos medias.
+######
+
+# Segun Cifras oficiales las ventas  durante el eclipse en los supermercados de la zona habrían aumentado en cerca de 30% sus ventas. 
+# Fernando Guzmán, presidente de la Cámara de Comercio de Coquimbo, coincidió y afirmo que: 
+# “Aún no hemos sacado todas las cuentas, pero hasta el momento hemos visto que el mayor flujo de turistas fue domingo, lunes y martes. 
+# Nos vimos altamente beneficiados por la ocupación hotelera, ya que hostales, hoteles y residenciales estuvieron copados. 
+# Los presupuestos fueron satisfechos también por los restaurantes y locales de comida”, dijo.
+# Fuente: Diario el Día - http://www.diarioeldia.cl/economia/turismo/eclipse-turistas-se-quedaron-en-promedio-3-dias-gastaron-99-mil-diarios
+
+# Bajo este contexto, durante el trabajo en terreno, una de las preguntas a los turista fue  como se iban a alimentar durante su estadia. 
 # Las opciones que se les dieron a los turistas para escoger fueron:
-
-#   Restaurant :    Los tutistas preferian ir a comer a Resuarants
-
-#   Cocina :        Los tutistas prefieren cocinarse ellos mismos.
-
+#   Restaurant :    Los turistas preferian ir a comer a Restaurant
+#   Cocina :        Los turistas prefieren cocinarse ellos mismos.
 #   Comida Rapida:  Los turistas prefieren ir a comer a locales de comida 
 #                   rápida.
+#   Otro:           Los turistas prefieren  otra opción para alimentarse
 
-#   Otro:           Los tutistas prefieren 2 opciones para alimentarse.
-
-
-# De los datos obtenidos se quiere saber si existe alguna diferencia en el
-# promedio de gasto diario de las personas que comieron en en estas 
-# diferentes opciones. Esto quiere decir que el promedio de 
-# ingresos de las personas que comen en restaurant es mayor al promedio 
-# de las personas que comen en otro lugar ( por ejemplo ).
-
-
-
+# A simple vista las respuestas fueron variadas, pero intuitivamente dentro del grupo se propuso que el promedio de las personas 
+# que comen en restaurant era mayor al promedio de personas que se cocinaban, debido a que tenian un mayor presupuesto para gastar.
+# Es por esto que se plantea como pregunta de investigación si la media de 
+#los presupuestos eran diferentes dependiendo del medio para alimentarse.
 
 
 
@@ -69,14 +77,17 @@ set.seed(4*17+13*17)
 
 
 
-# Antes de continuar con el procedimiento, es necesario tener claro
-# la muestra que se utilizará.
-# Una buena forma de obtener un numero de muestras es utilizar
-# un muestreo estratificado con afijación proporcional.
+
+
+#Definiendo valores razonables (y bien justificados) para los diferentes factores para este estudio, el equipo
+#ha de determinar el tamaño de muestra requerido para realizar esta comparación estadística utilizando
+#muestreo estratificado con afijación proporcional.
 
 
 
 
+# Antes de continuar con el procedimiento, es necesario tener claro la muestra que se utilizará.
+# Una buena forma de obtener un numero de muestras es utilizar un muestreo estratificado con afijación proporcional.
 
 #-----------------------#
 # 1.1  Captura de Datos #
