@@ -324,9 +324,9 @@ datos_p2.frame$Muestras <- redondeo_edad.actual
 #Creamos una variable datos_p2.muestra
 data.muestra.p2 <- datos_edad_ingresos %>% # De la población 
   
-  group_by(Intervalo) %>% # Agrupapos por alimentos
+  group_by(Intervalo) %>% # Agrupapos por edad
   
-  nest() %>% # dejamos todos los datos en 1 fila por alimento
+  nest() %>% # dejamos todos los datos en 1 fila por intervalo de edad
   
   mutate(n=datos_p2.frame$Muestras) %>% # fijamos el tamaño 
   # de cada muestra
@@ -414,7 +414,7 @@ edad.diagrama.p2 <- ggboxplot(
   color = "Intervalo",
   add = "jitter"
 )
-print(alimentos.diagrama.p2)
+print(edad.diagrama.p2)
 
 # podemos ver mucha presencia de outliers.
 

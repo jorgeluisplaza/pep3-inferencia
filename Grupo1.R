@@ -38,13 +38,13 @@
 # ¿ La porción de chilenos y extranjeros con respecto a su presupuesto  diario fue diferente?.
 
 
-# install.packages("ez") # InstalaciÃ³nn del paquete "Ez"
+# .packages("ez") # InstalaciÃ³nn del paquete "Ez"
 
 
-# install.packages("tidyverse") # InstalaciÃ³nn del paquete "tidyverse"
+# .packages("tidyverse") # InstalaciÃ³nn del paquete "tidyverse"
 
 
-# install.packages("WRS2") # InstalaciÃ³n del paquete "WRS2"
+# .packages("WRS2") # InstalaciÃ³n del paquete "WRS2"
 
 library(ez)
 library(magrittr)
@@ -57,7 +57,7 @@ library(knitr)
 library(boot)
 library(tidyr)
 library(devtools)
-#install_github("DFJL/SamplingUtil")
+#_github("DFJL/SamplingUtil")
 library(SamplingUtil)
 
 library(stats)
@@ -161,7 +161,7 @@ set.seed(341)
 ######### Importante #############
 
 # Para el uso de la funcion se debe instalar 
-# la libreria "devtools", luego descomentar la linea #install_github("DFJL/SamplingUtil")
+# la libreria "devtools", luego descomentar la linea #_github("DFJL/SamplingUtil")
 # en las librerias definidas anteriormente y ejecutar 
 
 n.sys <- nMuestras
