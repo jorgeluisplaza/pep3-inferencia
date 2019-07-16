@@ -1,13 +1,13 @@
 
-# install.packages("ez") # Instalaciónn del paquete "Ez"
+# install.packages("ez") # InstalaciÃ³nn del paquete "Ez"
 
 
-# install.packages("tidyverse") # Instalaciónn del paquete "tidyverse"
+# install.packages("tidyverse") # InstalaciÃ³nn del paquete "tidyverse"
 
 
-# install.packages("WRS2") # Instalación del paquete "WRS2"
+# install.packages("WRS2") # InstalaciÃ³n del paquete "WRS2"
 
-# Importación de modulo "ez"
+# ImportaciÃ³n de modulo "ez"
 library(ez)
 
 # Modulos para graficos
@@ -25,7 +25,7 @@ library(WRS2)
 
 # GRUPO 1
 
-# Fernanda Muñoz: d1 = 4
+# Fernanda MuÃ±oz: d1 = 4
 # Jorge Plaza: d2 = 13
 # Felipe Vasquez: d3 = 17
 # Nicolas Gutierrez: d4 = 17
@@ -35,47 +35,47 @@ set.seed(4*17+13*17)
 
 
 #Pregunta 2
-#El equipo debe plantear una pregunta de investigaci�n interesante que requiera la comparaci�n de m�s de
+#El equipo debe plantear una pregunta de investigación interesante que requiera la comparación de más de
 #dos medias.
 #Definiendo valores razonables (y bien justificados) para los diferentes factores para este estudio, el equipo
-#ha de determinar el tama�o de muestra requerido para realizar esta comparaci�n estad�stica utilizando
-#muestreo estratificado con afijaci�n proporcional.
-#Usando la semilla d1�d3+ d2�d4, el equipo debe aplicar este muestreo en los datos de Coquimbo.
-#El equipo debe usar un m�todo robusto para responder su pregunta de investigaci�n.
+#ha de determinar el tamaño de muestra requerido para realizar esta comparación estadística utilizando
+#muestreo estratificado con afijación proporcional.
+#Usando la semilla d1·d3+ d2·d4, el equipo debe aplicar este muestreo en los datos de Coquimbo.
+#El equipo debe usar un método robusto para responder su pregunta de investigación.
 
 
 
 
 ########
-#El equipo debe plantear una pregunta de investigaci�n interesante que requiera la comparaci�n de m�s de
+#El equipo debe plantear una pregunta de investigación interesante que requiera la comparación de más de
 #dos medias.
 ######
 
-# Segun Cifras oficiales las ventas  durante el eclipse en los supermercados de la zona habr�an aumentado en cerca de 30% sus ventas. 
-#�Fernando Guzm�n, presidente de la C�mara de Comercio de Coquimbo, coincidi� y afirmo que: 
-#��A�n no hemos sacado todas las cuentas, pero hasta el momento hemos visto que el mayor flujo de turistas fue domingo, lunes y martes. 
-#�Nos vimos altamente beneficiados por la ocupaci�n hotelera, ya que hostales, hoteles y residenciales estuvieron copados. 
-#�Los presupuestos fueron satisfechos tambi�n por los restaurantes y locales de comida�, dijo.
-# Fuente: Diario el D�a - http://www.diarioeldia.cl/economia/turismo/eclipse-turistas-se-quedaron-en-promedio-3-dias-gastaron-99-mil-diarios
+# Segun Cifras oficiales las ventas  durante el eclipse en los supermercados de la zona habrían aumentado en cerca de 30% sus ventas. 
+# Fernando Guzmán, presidente de la Cámara de Comercio de Coquimbo, coincidió y afirmo que: 
+# “Aún no hemos sacado todas las cuentas, pero hasta el momento hemos visto que el mayor flujo de turistas fue domingo, lunes y martes. 
+# Nos vimos altamente beneficiados por la ocupación hotelera, ya que hostales, hoteles y residenciales estuvieron copados. 
+# Los presupuestos fueron satisfechos también por los restaurantes y locales de comida”, dijo.
+# Fuente: Diario el Día - http://www.diarioeldia.cl/economia/turismo/eclipse-turistas-se-quedaron-en-promedio-3-dias-gastaron-99-mil-diarios
 
 # Bajo este contexto, durante el trabajo en terreno, una de las preguntas a los turista fue  como se iban a alimentar durante su estadia. 
 # Las opciones que se les dieron a los turistas para escoger fueron:
 #   Restaurant :    Los turistas preferian ir a comer a Restaurant
 #   Cocina :        Los turistas prefieren cocinarse ellos mismos.
 #   Comida Rapida:  Los turistas prefieren ir a comer a locales de comida 
-#                   r�pida.
-#   Otro:           Los turistas prefieren  otra opci�n para alimentarse
+#                   rápida.
+#   Otro:           Los turistas prefieren  otra opción para alimentarse
 
 # A simple vista las respuestas fueron variadas, pero intuitivamente dentro del grupo se propuso que el promedio de las personas 
 # que comen en restaurant era mayor al promedio de personas que se cocinaban, debido a que tenian un mayor presupuesto para gastar.
-# Es por esto que se plantea como pregunta de investigaci�n si la media de 
+# Es por esto que se plantea como pregunta de investigación si la media de 
 #los presupuestos eran diferentes dependiendo del medio para alimentarse.
 
 
 
 
 ####---------------------------------------------------------------####
-#### PARTE 1 : MUESTREO ESTRATIFICADO CON AFIJACIÓN PROPORCIONAL   ####
+#### PARTE 1 : MUESTREO ESTRATIFICADO CON AFIJACIÃ“N PROPORCIONAL   ####
 ####---------------------------------------------------------------####
 
 
@@ -83,39 +83,39 @@ set.seed(4*17+13*17)
 
 
 #Definiendo valores razonables (y bien justificados) para los diferentes factores para este estudio, el equipo
-#ha de determinar el tama�o de muestra requerido para realizar esta comparaci�n estad�stica utilizando
-#muestreo estratificado con afijaci�n proporcional.
+#ha de determinar el tamaño de muestra requerido para realizar esta comparación estadística utilizando
+#muestreo estratificado con afijación proporcional.
 
 
 
 # Antes de continuar con el procedimiento, es necesario tener claro
-# la muestra que se utilizará.
+# la muestra que se utilizarÃ¡.
 # Una buena forma de obtener un numero de muestras es utilizar
-# un muestreo estratificado con afijación proporcional.
+# un muestreo estratificado con afijaciÃ³n proporcional.
 # Concepto: MUESTREO ESTRATIFICADO
-# El muestreo es una herramienta de investigación científica, cuya función
-# básica es determinar que parte de una población debe examinarse, con la finalidad de hacer
-# inferencias sobre dicha población. El muestreo estratificado es una técnica de muestreo 
-# probabilístico en donde el investigador divide a toda la población en diferentes subgrupos 
+# El muestreo es una herramienta de investigaciÃ³n cientÃ­fica, cuya funciÃ³n
+# bÃ¡sica es determinar que parte de una poblaciÃ³n debe examinarse, con la finalidad de hacer
+# inferencias sobre dicha poblaciÃ³n. El muestreo estratificado es una tÃ©cnica de muestreo 
+# probabilÃ­stico en donde el investigador divide a toda la poblaciÃ³n en diferentes subgrupos 
 # o estratos. Luego, selecciona aleatoriamente a los sujetos finales de los diferentes estratos 
 # en forma proporcional. 
-# ¿Por qué conviene utilizar este tipo de muestreo?
+# Â¿Por quÃ© conviene utilizar este tipo de muestreo?
 # -> Puede entregar informacion mas precisa al reducir el error por cada estrato.
-# -> Se obtienen muestras más representativas
+# -> Se obtienen muestras mÃ¡s representativas
 # -> Permite inferir para cada estrato de manera independiente
 
 # Condiciones: 
-# -> La población está dividida en estratos (subpoblaciones)
+# -> La poblaciÃ³n estÃ¡ dividida en estratos (subpoblaciones)
 # -> Se conocen las proporciones o tamalos de los distintos estratos
 
 # Muestreo estratificado: Con afijacion proporcional
-# Este tipo de muestreo el tamaño de cada estrato en la muestra es proporcional al tamaño de cada
-# estrato en la población.
+# Este tipo de muestreo el tamaÃ±o de cada estrato en la muestra es proporcional al tamaÃ±o de cada
+# estrato en la poblaciÃ³n.
 #                                 n_{h} = n * W_{h}
 #
 # Donde: 
-# n_{h} : Tamaño del estrato h
-# n : tamaño de la población
+# n_{h} : TamaÃ±o del estrato h
+# n : tamaÃ±o de la poblaciÃ³n
 # W_{h} : Peso del estrato h ;     W_{h} = N_{h}
 #                                        -------
 #                                           N  
@@ -123,8 +123,8 @@ set.seed(4*17+13*17)
 
 
 
-# Antes de continuar con el procedimiento, es necesario tener claro la muestra que se utilizar�.
-# Una buena forma de obtener un numero de muestras es utilizar un muestreo estratificado con afijaci�n proporcional.
+# Antes de continuar con el procedimiento, es necesario tener claro la muestra que se utilizará.
+# Una buena forma de obtener un numero de muestras es utilizar un muestreo estratificado con afijación proporcional.
 
 #-----------------------#
 # 1.1  Captura de Datos #
@@ -133,7 +133,7 @@ set.seed(4*17+13*17)
 
 data.pregunta2 <- read.csv("eclipse2019.csv", header = TRUE) # lectura
 
-# Se filtran la cantidad de persona que escogieron cada opción
+# Se filtran la cantidad de persona que escogieron cada opciÃ³n
 
 Alimentacion <- data.frame(Alimentos = data.pregunta2$Alimentacion)
 Alimentacion.frame <- Alimentacion %>% 
@@ -151,7 +151,7 @@ Alimentacion.frame <- Alimentacion %>%
 
 
     #---------------------------------------------------------#
-    # 1.2  Aplicación de la formula de muestreo estratificado #
+    # 1.2  AplicaciÃ³n de la formula de muestreo estratificado #
     #---------------------------------------------------------#
 
 
@@ -165,8 +165,8 @@ Alimentacion.frame <- Alimentacion %>%
 #                                   N
 # Donde :
 #
-#     N  = Tamaño total.
-#     Ni = Tamaño del estrato i.
+#     N  = TamaÃ±o total.
+#     Ni = TamaÃ±o del estrato i.
 #     Pi = Peso del estrato i. Se obtiene dividiendo Ni / N .
 #     Qi = Complemento de Pi. Se calcula como  (1-Pi).
 #     E = Es el error. Esta dado por :
@@ -184,7 +184,7 @@ Alimentacion.frame <- Alimentacion %>%
 
 # Primeramente comencemos armando el numerador.
 
-# Definamos entonces, el tamaño de N que es la suma de estratos: 
+# Definamos entonces, el tamaÃ±o de N que es la suma de estratos: 
 N <- sum(Alimentacion.frame$Cantidad)
 
 # Comenzamos a agregarles datos al frame, como el peso de
@@ -195,14 +195,14 @@ Alimentacion.frame$Peso <- ( Alimentacion.frame$Cantidad  /
                                sum(Alimentacion.frame$Cantidad) 
 )
 
-# Añadimos el complemento del peso, osea 1-peso (Qi):
+# AÃ±adimos el complemento del peso, osea 1-peso (Qi):
 
 Alimentacion.frame$Complemento <- (1 - Alimentacion.frame$Peso)
 
 # Con esto ya tenemos los datos necesarios para el numerador
-# en la formula para obtener el tamaño de la muestra.
+# en la formula para obtener el tamaÃ±o de la muestra.
 
-# entonces el numerador estará dado por : S( Ni * Pi * Qi )
+# entonces el numerador estarÃ¡ dado por : S( Ni * Pi * Qi )
 
 Alimentacion.frame$NiPiQi <- (Alimentacion.frame$Cantidad *
                                 Alimentacion.frame$Peso *
@@ -246,7 +246,7 @@ alpha <- 0.05
 
 error <- ( error.maximo^2 / (qnorm(1-(alpha/2)))^2 )
 
-# recordemos que el total de la población es N.
+# recordemos que el total de la poblaciÃ³n es N.
 
 # entonces ya con esto tenemos nuestro denominador:
 
@@ -282,13 +282,13 @@ Alimentacion.frame$Muestras <- (Alimentacion.frame$Peso *
       #-------------------------------------------#
 
 
-# El redondeo actual está dado, por la funcion de redondeo al valor de 5
+# El redondeo actual estÃ¡ dado, por la funcion de redondeo al valor de 5
 
 redondeo.actual <- sum(round(Alimentacion.frame$Muestras))
 
-# Entonces ¿Como redondear esto ?
+# Entonces Â¿Como redondear esto ?
 
-# Crearemos una función especial para redondear
+# Crearemos una funciÃ³n especial para redondear
 
 customRound <- function(value, vector){
   
@@ -341,13 +341,13 @@ if (muestras.p2 > redondeo.actual) {
 #                        69
 
 # Cabe destacar que como el valor de 2 estratos son iguales, no podemos
-# obtener una aproximación al valor de la muestra exacta.
+# obtener una aproximaciÃ³n al valor de la muestra exacta.
 # Por lo que tomamos 69 muestras en vez de 68. 
 
 
 
       #-----------------------------#
-      # 1.4  Creación de la Muestra #
+      # 1.4  CreaciÃ³n de la Muestra #
       #-----------------------------#
 
 
@@ -361,28 +361,28 @@ data.poblacion.p2 <- data.frame(
   Ingresos = data.pregunta2[["Presupuesto"]]
 )
 
-# Ordenamos la población por orden alfabetico
+# Ordenamos la poblaciÃ³n por orden alfabetico
 data.poblacion.p2 <- data.poblacion.p2[
   order(data.poblacion.p2$Alimento),]  
 
 # Ahora comenzamos a escoger al azar con la seed fijada
 
 #Creamos una variable data.pregunta2.muestra
-data.muestra.p2 <- data.poblacion.p2 %>% # De la población 
+data.muestra.p2 <- data.poblacion.p2 %>% # De la poblaciÃ³n 
   
   group_by(Alimento) %>% # Agrupapos por alimentos
   
   nest() %>% # dejamos todos los datos en 1 fila por alimento
   
-  mutate(n=Alimentacion.frame$Muestras) %>% # fijamos el tamaño 
+  mutate(n=Alimentacion.frame$Muestras) %>% # fijamos el tamaÃ±o 
   # de cada muestra
   
-  mutate(samp = map2(data, n, sample_n)) %>% # Mapeamos una función 
-  # de sample segun tamaño
+  mutate(samp = map2(data, n, sample_n)) %>% # Mapeamos una funciÃ³n 
+  # de sample segun tamaÃ±o
   
-  select(Alimento, samp) %>% # Aplicamos la función 
+  select(Alimento, samp) %>% # Aplicamos la funciÃ³n 
   
-  unnest() %>% # revertimos la agrupación de filas (ahora hay n filas)
+  unnest() %>% # revertimos la agrupaciÃ³n de filas (ahora hay n filas)
   
   as.data.frame() # volvemos a transformar a data.pregunta2 frame
 
@@ -390,18 +390,33 @@ data.muestra.p2 <- data.poblacion.p2 %>% # De la población
 
 
       ####-------------------------------------------####
-      #### PARTE 2 : APLICACIÓN DEL METODO ROBUSTO   ####
+      #### PARTE 2 : APLICACIÃ“N DEL METODO ROBUSTO   ####
       ####-------------------------------------------####
 
-# Como veiamos en la lectura, el paquete "WRS2" nos facilita varias 
-# funciones. Para utilizar metodos robustos.
+#Los métodos robustos son aquellos que permiten vislumbrar qué tan efectivo 
+#son las hipótesis planteadas a partir de los datos presentes que pueden ser o no
+# de caracter anómalo, es decir, que existen valores atípicos dentro de la muestra.
+#También predicen que tan efectivo son los métodos paramétricos y/o
+#no paramétricos para estimar la media, la mediana o la varianza de la muestra, 
+#(Para el ejercicio, se debe estimar la media).
 
+#Existen 4 tipos de metodos robustos:
+#- Estimador de Huber
+#- Media α-recortado muestral
+#- Media α-winsorizada muestral
+#-Mediana muestral
+
+#Dentro de las bondades de R, existen paquetes que permiten aplicar algunos métodos robustos,
+#como por ejemplo, el paquete "WRS2" nos facilita varias 
+# funciones para utilizar metodos robustos.
 # Por las condiciones del problema se podria sospechar que el metodo 
 # ANOVA es el indicado para comparar varias muestras. Incluso la 
 # alternativa no parametrica a ANOVA -> Kruskal.
 
+
 # Una alternativa para el metodo robusto de ANOVA  t1way() o t1waybt() 
-# con bootstraping, dependiendo de los datos:
+# con bootstraping (dependiendo de los datos), ya que este ésta función lo que hace es recortar una
+#porción de la muestra por un lado para eliminar los datos atípicos de la muestra. :
 
 
     #-----------------------------#
@@ -433,7 +448,7 @@ normalidad.p2 <- ggqqplot(
   color = "Alimento"
 )
 
-# se añaden todos 
+# se aÃ±aden todos 
 normalidad.p2 <- normalidad.p2 + facet_wrap(~ Alimento)
 print(normalidad.p2)
 
@@ -454,11 +469,11 @@ print(alimentos.diagrama.p2)
 
 # Conciderando esto podemos decir que el metodo robusto nos viene como 
 # anillo al dedo. Ya que como los datos son muy distintos o atipicos.
-# La medicion cambiará si se le agrega o quita un dato.
+# La medicion cambiarÃ¡ si se le agrega o quita un dato.
 
 
       #------------------------------#
-      # 2.2  Aplicación del metodo   #
+      # 2.2  AplicaciÃ³n del metodo   #
       #------------------------------#
 
 # Como la alternativa robusta de ANOVA es, segun las lecturas, es 
@@ -472,8 +487,8 @@ print(alimentos.diagrama.p2)
 # Antes de proceder con el metodo, veamos cuales son las hipotesis
 # a contrastar : 
 
-# H0 =  µ_ingresos_restaurant = µ_ingresos_cocina =
-#       µ_ingresos_omida_rapida = µ_ingresos_otro
+# H0 =  Âµ_ingresos_restaurant = Âµ_ingresos_cocina =
+#       Âµ_ingresos_omida_rapida = Âµ_ingresos_otro
 
 # H1 = Al menos un par de medias son distintas. 
 
@@ -483,7 +498,7 @@ print(alimentos.diagrama.p2)
 # Como siempre manejaremos este estudio con un error del 5%. 
 
 
-  # 2.2.2 Aplicación
+  # 2.2.2 AplicaciÃ³n
   #-----------------
 
 # entonces finalmente:
@@ -528,5 +543,7 @@ prueba.robusta.p2_v2 <- t1waybt(Ingresos ~ Alimento, data.muestra.p2)
 # promedio de ingresos por persona que comieron en diferentes lugares
 # es distinto.
 
+#Además se confirma que el método ocupado para verificar la no existencia de diferencia de medias 
+#de los turiste que se alimentaron de diferentes formas es el adecuado
 #------------------------------------------------------------------------
 
