@@ -18,14 +18,13 @@
 
 										# Pregunta 1
 
-# El equipo debe plantear una pregunta de investigación interesante que requiera la comparación de dos
-# proporciones.
-# Definiendo valores razonables (y bien justificados) para los diferentes factores para este estudio, el equipo
-# ha de determinar el tamaño de muestra necesitado para realizar esta comparación estad�stica utilizando
-# muestreo sistemático.
-# Usando la semilla d1·d2+ d3·d4, el equipo debe realizar este muestreo en los datos de Coquimbo.
-# El equipo debe usar bootstrapping para responder su pregunta de investigación con la muestra obtenida
-
+#El equipo debe plantear una pregunta de investigación interesante que requiera la comparación de dos
+#proporciones.
+#Definiendo valores razonables (y bien justificados) para los diferentes factores para este estudio, el equipo
+#ha de determinar el tamaño de muestra necesitado para realizar esta comparación estadística utilizando
+#muestreo sistemático.
+#Usando la semilla d1·d2+ d3·d4, el equipo debe realizar este muestreo en los datos de Coquimbo.
+#El equipo debe usar bootstrapping para responder su pregunta de investigación con la muestra obtenida
 
 
 
@@ -34,12 +33,12 @@
 #(http://www.diarioeldia.cl/economia/turismo/eclipse-turistas-se-quedaron-en-promedio-3-dias-gastaron-99-mil-diarios)
 # llegaron 307.000. Visitantes a la región de coquimbo  a contemplar el eclipse solar Total.
 # 15 Mil de estos llegaron en avión. 30.0000 en bus y 262.500 en peajes. Bajo este contexto, el equipo de trabajo realizó diferentes 
-# Consultas a extranjeros y nacionales, siendo en particular una de estas el  presupuesto diario. Una vez realizadas las encuestas 
-# al compartir la experiencia la mayor�a aseguraba que los extranjeros ten�an mayor presupuesto que los chiles.
+# Consultas a extranjeros y nacionales, siendo en particular una de estas el  presupuesto diario. Una vez realizadas las encuestas, 
+# al compartir la experiencia la mayoría aseguraba que los extranjeros tenían mayor presupuesto que los chiles.
 # Junto con esto el análisis oficial entrego que los turistas extranjeros gastaron mucho más que los nacionales.
 #  en función de comparar con las cifras oficiales y la percepción de los encuestadores se plantea la pregunta de investigación 
-# ¿ La porción de chilenos y extranjeros con respecto a su presupuesto 
-# diario fue diferente?.
+# ¿ La porción de chilenos y extranjeros con respecto a su presupuesto  diario fue diferente?.
+
 
 
 
@@ -75,83 +74,89 @@ datos.todos <- read.csv (
 tabla <- data.frame(Procedencia=datos.todos$Procedencia,Presupuesto=datos.todos$Presupuesto)
 
 # Definiendo valores razonables (y bien justificados) para los diferentes factores para este estudio, el equipo
-# ha de determinar el tamaño de muestra necesitado para realizar esta comparación estad�stica utilizando
-#�muestreo sistemático.
-
-# Para estimar la proporcion debemos utilizar la siguiente formula para calcular el numero de muestras:
-
-        #          N * p * q
-      # n =  ---------------------
-        #     (N - 1) * D + p * q
+# ha de determinar el tamaño de muestra necesitado para realizar esta comparación estadística utilizando
+# muestreo sistemático.
 
 
-P= 0.5 # = Probabilidad de Ocurrencia del Feno�meno Estudiado 
-Q = 0.5 # = Probabilidad de que no Ocurra el Feno�meno (q = 1 � p)
-N = 86 # numero de la población 
-e= 0.05 # Maximo error permitido 5% es un numero alto debido a que se tiene poca cantidad de población.
-D = (e^2)/4
-nMuestras = (N*P*Q)/((N-1)*D + P*Q)
-nMuestras <- ceiling(nMuestras) # aproximar hacia arriba
-cat("Numero de muestras a utilizar :")
-cat(nMuestras)
+# El tamaño de una muestra se le conoce como aquel número determinado de sujetos o cosas que componen la muestra extraída 
+# de una población, La cosa no es tan sencilla como aumentar n indefinidamente. Conforme el tamaño
+# de la muestra se hace más grande, también lo hacen el coste económico, el tiempo
+# necesario y los inconvenientes del trabajo de campo. Así que las soluciones perfectas no
+# existen en esta dimensión y siempre hay que manejar variables que apuntan a
+# direcciones diferentes. El objetivo es conseguir un n razonable en tres sentidos: apunta a
+# un nivel de seguridad razonable, con una precisión razonable y unos recursos razonables.
+# por lo cual para este trabajo el nivel de seguridad ( o porcentaje de error )  es del 5% debido a la cantidad
+# de encuestas a tomadas es baja (bajo 300 encuestas)
+# se utiliza un 95 % de confianza tomando en cuenta la importancia del resultado  y los estandares.
+# los recursos incidieron en el numero total de población = 86.
+
+# Fuente : http://asignatura.us.es/dadpsico/apuntes/TamMuestra.pdf
+
+# Al utilizar Muestreo Sistematico  debemos utilizar la siguiente formula para calcular el numero de muestras:
 
 # Formula obtenida:  VI Muestreo Sistemático, Dr. Jesús Mellado Bosque
 # http://www.uaaan.mx/~jmelbos/muestreo/muapu4.pdf
 
+# P # = Probabilidad de Ocurrencia del Fenómeno Estudiado
+# Q  = Probabilidad de que no Ocurra el Fenómeno (q = 1 – p)
+# Varianza = P*Q
+Varianza =  # CALCULAR .... 
+N = 86 # numero de la población
+e= 0.05 # Maximo error permitido 5 %
+D = (e^2)/4
+nMuestras = (N*Varianza)/((N-1)*D + Varianza)
+nMuestras <- ceiling(nMuestras) # aproximar hacia arriba
+cat("Numero de muestras a utilizar :")
+cat(nMuestras)
 
+
+# Dias de nacimiento
+
+# Fernanda Muñoz: d1 = 4
+# Jorge Plaza: d2 = 13
+# Felipe Vasquez: d3 = 17
+# Nicolas Gutierrez: d4 = 17
 # Se calcula la semilla con los dias de nacimientos de los integrantes mencionados anteriormente
 # Semilla: d1 * d2 + d3 * d4 = 4 * 13 + 17 * 17 = 341
 set.seed(341)
 
 
-### El muestre sistematico es una tecnica de muestreo aleatorio sencillo y eficaz
-### La aplicacion del muestreo sistematico se hace de la siguiente forma:
+#Es una técnica de muestreos probabilísticos - 
+#y que por lo tanto requiere tener un control preciso del marco muestral de individuos a seleccionar.
+# Consistente en escoger  un individuo inicial de forma aleatoria entre la población y,
+# a continuación, seleccionar para la muestra a cada enésimo individuo disponible en el marco muestral. 
 
-### 1 - Se divide el marco muestral en k = N/n fragmentos, donde N corresponde al tama�o de la poblcacion
-### y n al tama�o de la muestra que deseamos
+# Pasos para la selección de un muestreo sistematico de forma manual # 
 
-### 2 - Se elige un numero aleatorio de inicio dentro del intervalo escogido
+#1. Elaboramos una lista ordenada de los N individuos de la población, lo que sería el marco muestral.
 
-### 3 - Se va eligiendo los individuos de acuerdo al numero de inicio mas el numero k obtenido como una secuencia
-### aritmetica simple
+#2. Dividimos el marco muestral en n fragmentos, donde n es el tamaño de muestra que deseamos. 
+#El tamaño de estos fragmentos será: K=N/n, donde K recibe el nombre de intervalo o coeficiente de elevación.
 
-### Para la utilizacion del muestreo sistematico se utiliza una libreria externa llamada SamplingUnit, la funcion utilizada
-### es sys.sample
+#3. Número de inicio: obtenemos un número aleatorio entero A, menor o igual al intervalo. 
+#Este número corresponderá al primer sujeto que seleccionaremos para la muestra dentro del primer fragmento en que hemos dividido la población.
 
-# Se utiliza muestreo sistematico para el calculo de la muestra
+# 4. Selección de los n-1 individuos restantes: Seleccionamos los siguientes individuos a partir del individuo seleccionado aleatoriamente,
+# mediante una sucesión aritmética, seleccionando a los individuos del resto de fragmentos en 
+# que hemos dividido la muestra que ocupan la misma posición que el sujeto inicial. Esto equivale a decir que seleccionaremos los individuos:
 
-# Numero de muestra escogido
+# referencias: https://www.netquest.com/blog/es/blog/es/muestreo-sistematico?fbclid=IwAR1HyAT1wP4px-mCRKxeqfi7W0bf0RR4FxvU4-SKpnTwYG4sCR0MYSFahrc
+
+# R tiene una función llamada sys.sample que selecciona una muestra sistemática de tamaño n.
+
 n.sys <- nMuestras
-
-# Se obtienen los sujetos seleccionados mediante muestre sistematico, 
-#se entregan como parametros N y n que corresponden al tama�o de la poblacion
-# y al tama�o de la muestra respectivamente
-index <- sys.sample(N=nrow(tabla), n=nMuestras)
-
-# Se obtienen de la tabla de datos los sujetos seleccionados en index
+index <- sys.sample(N=nrow(tabla), n=n.sys)
 muestra <- tabla[c(index), ]
 frec <- 1:nrow(muestra)
-
-# Se obtiene la tabla con las muestras
 p1.1 <- aggregate(frec ~ Procedencia + Presupuesto, data = muestra, FUN = length)
 
 
-# Para realizar un estudio de proporciones se aplica un test  ??� de independencia. 
-
-# Un test  ??� de independencia se utiliza para determinar si el valor observado de una variable
-# depende del valor observado de la otra variable
-
-# En este caso, las variables en estudio son la procedencia y el presupuesto diario del turista. Se requiere saber si 
-# la procedencia depende del presupuesto con un estudio de proporciones entre turistas Chilenos y Extranjeros.
-
-# Las hipotesis planteadas son las siguientes:
-
-# H0: El presupuesto diario gastado por una persona depende de la procedencia de la persona
-# H1: El presupuesto diario gastado por una persona no depende de la procedencia de la persona
+## .. MOSTRAR MUESTRAS QUE SE TOMAR ...  ### ...
+### PLOTEAR LOS RESULTADOS ### 
 
 
-##� Los rangos de presupuestos elegidos por los investigadores son los siguientes:
 
+##  Los presupuestos son presupuestos 
 # 1 - [0-25.000]
 # 2 - [2500-50.000]
 # 3 - [50.000-75.000]
@@ -186,27 +191,27 @@ table.p1.1 <- data.frame(
 # Se definen el nombre de las filas 
 rownames(table.p1.1) <- c("Chileno", "Extranjero")
 
+# El bootstrapping es un método de remuestreo. 
+# que se utiliza para aproximar la distribución en el muestreo de un estadístico. 
+# Se usa frecuentemente para aproximar el sesgo o la varianza de un estadístico, 
+# Bootstrapping se basa en la ley de los grandes números , 
+# que establece que si realiza una muestra una y otra vez, 
+# sus datos deberían aproximarse a los datos reales de la población.
+#  Esto funciona, tal vez sorprendentemente, incluso cuando está utilizando una sola muestra para generar los datos.
+# La enorme potencia de cálculo de los ordenadores actuales facilita considerablemente 
+# la aplicabilidad de este método tan costoso computacionalmente.
+#Esta técnica resulta especialmente útil en aquellas situaciones en las que las muestras con las que se cuenta son pequeñas 
+# Como es en este caso.
 
-# Bootstrapping es un metodo de remuestreo. Se utiliza para aproximar la distribucion en el muestreo de un estadistico
-# Procedimiento de bootstrapping es el siguiente
+#fuentes :https://www.statisticshowto.datasciencecentral.com/bootstrap-sample/?fbclid=IwAR3BUYPJN-4EAxDltH3HyYROns1OUuDA-iN1Gmk6J-IGWS04bEBE5BSFd9s
 
-# 1 - Se elige un tamano de la muestra
-# 2 - Mientras el tamano de la muestra sea menor a la muestra escogia:
-      # 2.1 - Se elige al azar una observacion de la muestra
 
-# Es importante mencionar que las observaciones se puede repetir n cantidad de veces
-# o incluso no aparecer en el remuestreo
-# Esta caracteristica lo diferencia de otras tecnicas de remuestreo
 
-# Luego, se escoge un numero de repeticiones de bootstrap
-# Para cada repeticion se calcula el estadistico
-# Se hace un estudio sobre la distribucion de los m estadisticos calculados
 
-# En el caso de R, se utiliza boot de la libreria boot
-
-# Se debe definir un estadistico: 
-# Para cada estadistico se hace calculo de la tabla, tomando muestras diferentes
-# A cada uno de ellos se le hace un test Chi - Squared.
+# Se define estadistico para el bootstraping
+# Para cada iteracion se hace calculo de tabla
+# y de la prueba Chi - Squared
+# Se devuelve el estadistico obtenido
 
 foo <- function(data, indices){
   frec <- 1:nrow(data)
@@ -242,7 +247,6 @@ foo <- function(data, indices){
   
 }
 
-# Boot hace calculo del bootstrapping, recibe la muestra, el estadistico y el numero de repeticiones
 
 # Se calcula el bootstraping sobre la cantidad de repeticion n.perm
 n.perm <- 1000
@@ -251,8 +255,38 @@ bootobj <- boot(muestra, foo, R = n.perm)
 distribucion <- bootobj$t
 
 
-# Se define un alpha de 0.05
-alpha <- 0.05
+
+#### DEFENIR MEJOR #######
+#### DEFENIR MEJOR #######
+#### DEFENIR MEJOR #######
+#### DEFENIR MEJOR #######
+#### DEFENIR MEJOR #######
+#### DEFENIR MEJOR #######
+
+# procedimiento ## 
+
+
+# Se tiene una "tabla de dos vías"  que registra las
+# frecuencias observadas para las posibles combinaciones de dos
+# variables categóricas.  Para esto existe un procedimiento χ^2, que se le conoce de forma 
+# Prueba χ^2 de Independencia. En donde hay dos factores ("Presupuesto" y "Procedencia")
+# que se miden en una misma población
+
+
+cat("\n")
+
+cat("HO: la procedencia de una persona no depende del presupuesto")
+cat("HA: la procedencia incide en el presupuesto \n")
+
+
+# Se define un alpha de 0.05 estandar debido a que  es razonable para esta prueba, dado la cantidad de datos obtenidos y lo que se busca (no critico).
+alpha <- 0.05  # es decir 95% confianza.
+
+
+
+
+# En r la función chisq.test realiza una prueba chi-cuadrado, utilizaremos esto para realizar una prueba de independecia  χ^2.
+
 
 # Se obtiene el valor observado
 observado <- chisq.test(table.p1.1)$statistic
@@ -270,3 +304,5 @@ limit <- distribucion[p.95]
 hist(distribucion, breaks = 25)
 abline(v=observado, col="blue")
 abline(v=limit, col="red")
+
+
