@@ -47,7 +47,7 @@ muestra.extranjeros <- tabla[ indices.extranjeros, ]
 muestra <- rbind(muestra.chilenos, muestra.extranjeros)
 
 # Para realizar el modelo automático de R
-muestra.completa.chilenos <- datos.todos[ indices.extranjeros, ]
+muestra.completa.chilenos <- datos.todos[ indices.chilenos, ]
 muestra.completa.extranjeros <- datos.todos[ indices.extranjeros, ]
 muestra.completa <- rbind(muestra.completa.chilenos, muestra.completa.extranjeros)
 
