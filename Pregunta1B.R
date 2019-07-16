@@ -75,11 +75,11 @@ tabla <- data.frame(Procedencia=datos.todos$Procedencia,Presupuesto=datos.todos$
 
 # Definiendo valores razonables (y bien justificados) para los diferentes factores para este estudio, el equipo
 # ha de determinar el tamaño de muestra necesitado para realizar esta comparación estadística utilizando
-# muestreo sistemático.
+# muestreo sistemático.
 
 
 # El tamaño de una muestra se le conoce como aquel número determinado de sujetos o cosas que componen la muestra extraída 
-# de una población, La cosa no es tan sencilla como aumentar n indefinidamente. Conforme el tamaño
+# de una población, La cosa no es tan sencilla como aumentar n indefinidamente. Conforme el tamaño
 # de la muestra se hace más grande, también lo hacen el coste económico, el tiempo
 # necesario y los inconvenientes del trabajo de campo. Así que las soluciones perfectas no
 # existen en esta dimensión y siempre hay que manejar variables que apuntan a
@@ -87,7 +87,7 @@ tabla <- data.frame(Procedencia=datos.todos$Procedencia,Presupuesto=datos.todos$
 # un nivel de seguridad razonable, con una precisión razonable y unos recursos razonables.
 # por lo cual para este trabajo el nivel de seguridad ( o porcentaje de error )  es del 5% debido a la cantidad
 # de encuestas a tomadas es baja (bajo 300 encuestas)
-# se utiliza un 95 % de confianza tomando en cuenta la importancia del resultado  y los estandares.
+# se utiliza un 95 % de confianza tomando en cuenta la importancia del resultado  y los estandares.
 # los recursos incidieron en el numero total de población = 86.
 
 # Fuente : http://asignatura.us.es/dadpsico/apuntes/TamMuestra.pdf
@@ -124,9 +124,9 @@ set.seed(341)
 #Es una técnica de muestreos probabilísticos - 
 #y que por lo tanto requiere tener un control preciso del marco muestral de individuos a seleccionar.
 # Consistente en escoger  un individuo inicial de forma aleatoria entre la población y,
-# a continuación, seleccionar para la muestra a cada enésimo individuo disponible en el marco muestral. 
+# a continuación, seleccionar para la muestra a cada enésimo individuo disponible en el marco muestral.
 
-# Pasos para la selección de un muestreo sistematico de forma manual # 
+# Pasos para la selección de un muestreo sistematico de forma manual #
 
 #1. Elaboramos una lista ordenada de los N individuos de la población, lo que sería el marco muestral.
 
@@ -140,7 +140,7 @@ set.seed(341)
 # mediante una sucesión aritmética, seleccionando a los individuos del resto de fragmentos en 
 # que hemos dividido la muestra que ocupan la misma posición que el sujeto inicial. Esto equivale a decir que seleccionaremos los individuos:
 
-# referencias: https://www.netquest.com/blog/es/blog/es/muestreo-sistematico?fbclid=IwAR1HyAT1wP4px-mCRKxeqfi7W0bf0RR4FxvU4-SKpnTwYG4sCR0MYSFahrc
+# referencias: https://www.netquest.com/blog/es/blog/es/muestreo-sistematico?fbclid=IwAR1HyAT1wP4px-mCRKxeqfi7W0bf0RR4FxvU4-SKpnTwYG4sCR0MYSFahrc
 
 # R tiene una función llamada sys.sample que selecciona una muestra sistemática de tamaño n.
 
@@ -148,31 +148,23 @@ n.sys <- nMuestras
 index <- sys.sample(N=nrow(tabla), n=n.sys)
 muestra <- tabla[c(index), ]
 frec <- 1:nrow(muestra)
-p1.1 <- aggregate(frec ~ Procedencia + Presupuesto, data = muestra, FUN = length)
+p1 <- aggregate(frec ~ Procedencia + Presupuesto, data = muestra, FUN = length)
 
-
-## .. MOSTRAR MUESTRAS QUE SE TOMAR ...  ### ...
-### PLOTEAR LOS RESULTADOS ### 
-
-
-
-##  Los presupuestos son presupuestos 
+## Los presupuestos son presupuestos 
 # 1 - [0-25.000]
 # 2 - [2500-50.000]
 # 3 - [50.000-75.000]
 # 4 - [75.000-o Mas]
 
 # Se  calculan la cantidad de personas con sus respectivos presupuestos
-presupuesto.Menor25.Chilenos <- sum(p1.1[c(which(p1.1$Presupuesto < 25000 & p1.1$Procedencia == "Chileno")), "frec"])
-presupuesto.Menor25.Extranjeros <- sum(p1.1[c(which(p1.1$Presupuesto < 25000 & p1.1$Procedencia == "Extranjero")), "frec"])
-presupuesto.Entre2550.Chilenos <- sum(p1.1[c(which(p1.1$Presupuesto > 25000 & p1.1$Presupuesto < 50000 & p1.1$Procedencia == "Chileno")), "frec"])
-presupuesto.Entre2550.Extranjeros <- sum(p1.1[c(which(p1.1$Presupuesto > 25000 & p1.1$Presupuesto < 50000 & p1.1$Procedencia == "Extranjero")), "frec"])
-presupuesto.Entre5075.Chilenos <- sum(p1.1[c(which(p1.1$Presupuesto > 50000 & p1.1$Presupuesto < 75000 & p1.1$Procedencia == "Chileno")), "frec"])
-presupuesto.Entre5075.Extranjeros <- sum(p1.1[c(which(p1.1$Presupuesto > 50000 & p1.1$Presupuesto < 75000 & p1.1$Procedencia == "Extranjero")), "frec"])
-presupuesto.Mayor75.Chilenos <- sum(p1.1[c(which(p1.1$Presupuesto > 75000 & p1.1$Procedencia == "Chileno")), "frec"])
-presupuesto.Mayor75.Extranjeros <- sum(p1.1[c(which(p1.1$Presupuesto > 75000 & p1.1$Procedencia == "Extranjero")), "frec"])
-
-
+presupuesto.Menor25.Chilenos <- sum(p1[c(which(p1$Presupuesto < 25000 & p1$Procedencia == "Chileno")), "frec"])
+presupuesto.Menor25.Extranjeros <- sum(p1[c(which(p1$Presupuesto < 25000 & p1$Procedencia == "Extranjero")), "frec"])
+presupuesto.Entre2550.Chilenos <- sum(p1[c(which(p1$Presupuesto > 25000 & p1$Presupuesto < 50000 & p1$Procedencia == "Chileno")), "frec"])
+presupuesto.Entre2550.Extranjeros <- sum(p1[c(which(p1$Presupuesto > 25000 & p1$Presupuesto < 50000 & p1$Procedencia == "Extranjero")), "frec"])
+presupuesto.Entre5075.Chilenos <- sum(p1[c(which(p1$Presupuesto > 50000 & p1$Presupuesto < 75000 & p1$Procedencia == "Chileno")), "frec"])
+presupuesto.Entre5075.Extranjeros <- sum(p1[c(which(p1$Presupuesto > 50000 & p1$Presupuesto < 75000 & p1$Procedencia == "Extranjero")), "frec"])
+presupuesto.Mayor75.Chilenos <- sum(p1[c(which(p1$Presupuesto > 75000 & p1$Procedencia == "Chileno")), "frec"])
+presupuesto.Mayor75.Extranjeros <- sum(p1[c(which(p1$Presupuesto > 75000 & p1$Procedencia == "Extranjero")), "frec"])
 
 # Se agregan los presupuestos de Chilenos y Extranjeros
 presupuesto.Menor25 <- c(presupuesto.Menor25.Chilenos, presupuesto.Menor25.Extranjeros)
@@ -181,15 +173,19 @@ presupuesto.Entre5075 <- c(presupuesto.Entre5075.Chilenos, presupuesto.Entre5075
 presupuesto.Mayor75 <- c(presupuesto.Mayor75.Chilenos, presupuesto.Mayor75.Extranjeros)
 
 # Se guarda en un data frame
-table.p1.1 <- data.frame(
+table.p1 <- data.frame(
   "[0, 25000]"=presupuesto.Menor25, 
   "[25000, 50000]"=presupuesto.Entre2550, 
   "[50000, 75000]"=presupuesto.Entre5075,
   "> 75000"=presupuesto.Mayor75
 )
 
+Presupuesto <- 
+
+frecuencias <- aggregate(frec ~ Procedencia + Localidad, data = muestra, FUN = length)
+
 # Se definen el nombre de las filas 
-rownames(table.p1.1) <- c("Chileno", "Extranjero")
+rownames(table.p1) <- c("Chileno", "Extranjero")
 
 # El bootstrapping es un método de remuestreo. 
 # que se utiliza para aproximar la distribución en el muestreo de un estadístico. 
@@ -213,36 +209,34 @@ rownames(table.p1.1) <- c("Chileno", "Extranjero")
 # y de la prueba Chi - Squared
 # Se devuelve el estadistico obtenido
 
-foo <- function(data, indices){
+chisqr <- function(data, indices){
   frec <- 1:nrow(data)
   data <-  data[c(indices), ]
-  p1.1 <- aggregate(frec ~ Procedencia + Presupuesto, data = data, FUN = length)
-  presupuesto.Menor25.Chilenos <- sum(p1.1[c(which(p1.1$Presupuesto < 25000 & p1.1$Procedencia == "Chileno")), "frec"])
-  presupuesto.Menor25.Extranjeros <- sum(p1.1[c(which(p1.1$Presupuesto < 25000 & p1.1$Procedencia == "Extranjero")), "frec"])
-  presupuesto.Entre2550.Chilenos <- sum(p1.1[c(which(p1.1$Presupuesto > 25000 & p1.1$Presupuesto < 50000 & p1.1$Procedencia == "Chileno")), "frec"])
-  presupuesto.Entre2550.Extranjeros <- sum(p1.1[c(which(p1.1$Presupuesto > 25000 & p1.1$Presupuesto < 50000 & p1.1$Procedencia == "Extranjero")), "frec"])
-  presupuesto.Entre5075.Chilenos <- sum(p1.1[c(which(p1.1$Presupuesto > 50000 & p1.1$Presupuesto < 75000 & p1.1$Procedencia == "Chileno")), "frec"])
-  presupuesto.Entre5075.Extranjeros <- sum(p1.1[c(which(p1.1$Presupuesto > 50000 & p1.1$Presupuesto < 75000 & p1.1$Procedencia == "Extranjero")), "frec"])
-  presupuesto.Mayor75.Chilenos <- sum(p1.1[c(which(p1.1$Presupuesto > 75000 & p1.1$Procedencia == "Chileno")), "frec"])
-  presupuesto.Mayor75.Extranjeros <- sum(p1.1[c(which(p1.1$Presupuesto > 75000 & p1.1$Procedencia == "Extranjero")), "frec"])
+  p1 <- aggregate(frec ~ Procedencia + Presupuesto, data = data, FUN = length)
+  presupuesto.Menor25.Chilenos <- sum(p1[c(which(p1$Presupuesto < 25000 & p1$Procedencia == "Chileno")), "frec"])
+  presupuesto.Menor25.Extranjeros <- sum(p1[c(which(p1$Presupuesto < 25000 & p1$Procedencia == "Extranjero")), "frec"])
+  presupuesto.Entre2550.Chilenos <- sum(p1[c(which(p1$Presupuesto > 25000 & p1$Presupuesto < 50000 & p1$Procedencia == "Chileno")), "frec"])
+  presupuesto.Entre2550.Extranjeros <- sum(p1[c(which(p1$Presupuesto > 25000 & p1$Presupuesto < 50000 & p1$Procedencia == "Extranjero")), "frec"])
+  presupuesto.Entre5075.Chilenos <- sum(p1[c(which(p1$Presupuesto > 50000 & p1$Presupuesto < 75000 & p1$Procedencia == "Chileno")), "frec"])
+  presupuesto.Entre5075.Extranjeros <- sum(p1[c(which(p1$Presupuesto > 50000 & p1$Presupuesto < 75000 & p1$Procedencia == "Extranjero")), "frec"])
+  presupuesto.Mayor75.Chilenos <- sum(p1[c(which(p1$Presupuesto > 75000 & p1$Procedencia == "Chileno")), "frec"])
+  presupuesto.Mayor75.Extranjeros <- sum(p1[c(which(p1$Presupuesto > 75000 & p1$Procedencia == "Extranjero")), "frec"])
   
   presupuesto.Menor25 <- c(presupuesto.Menor25.Chilenos, presupuesto.Menor25.Extranjeros)
   presupuesto.Entre2550 <- c(presupuesto.Entre2550.Chilenos, presupuesto.Entre2550.Extranjeros)
   presupuesto.Entre5075 <- c(presupuesto.Entre5075.Chilenos, presupuesto.Entre5075.Extranjeros)
   presupuesto.Mayor75 <- c(presupuesto.Mayor75.Chilenos, presupuesto.Mayor75.Extranjeros)
   
-  
-
   # Se guarda en un data.frame
-  table.p1.1 <- data.frame(
+  table.p1 <- data.frame(
     "[0, 25000]"=presupuesto.Menor25, 
     "[25000, 50000]"=presupuesto.Entre2550, 
     "[50000, 75000]"=presupuesto.Entre5075,
     "> 75000"=presupuesto.Mayor75
   )
   
-  rownames(table.p1.1) <- c("Chileno", "Extranjero")
-  chi <- chisq.test(table.p1.1)
+  rownames(table.p1) <- c("Chileno", "Extranjero")
+  chi <- chisq.test(table.p1)
   return(chi$statistic)
   
 }
@@ -250,9 +244,9 @@ foo <- function(data, indices){
 
 # Se calcula el bootstraping sobre la cantidad de repeticion n.perm
 n.perm <- 1000
-bootobj <- boot(muestra, foo, R = n.perm)
+modelo.boot <- boot(muestra, chisqr, R = n.perm)
 
-distribucion <- bootobj$t
+distribucion <- modelo.boot$t
 
 
 
@@ -289,11 +283,7 @@ alpha <- 0.05  # es decir 95% confianza.
 
 
 # Se obtiene el valor observado
-observado <- chisq.test(table.p1.1)$statistic
-
-# Se calcula el p-valor
-count2 <- sum(distribucion > observado)
-p.value <- (count2 + 1)/(n.perm + 1)
+observado <- chisq.test(table.p1)$statistic
 
 # Se obtiene el intervalo de confianza
 p.95 <- (1 - alpha)*n.perm
@@ -301,8 +291,35 @@ distribucion <- sort(distribucion)
 limit <- distribucion[p.95]
 
 # Se grafica y se muestran los valores observados y obtenidos
-hist(distribucion, breaks = 25)
-abline(v=observado, col="blue")
-abline(v=limit, col="red")
+histograma <- gghistogram(
+  data = data.frame(dist = distribucion),
+  x = "dist",
+  fill = "lightblue",
+  xlab = "Chi cuadrado",
+  ylab = "Frecuencia",
+  title = "inserte titulo",
+  bins = 35
+) + geom_vline(
+  xintercept = observado,
+  linetype = "solid", color = "blue"
+) + geom_vline(
+  xintercept = limit,
+  linetype = "solid", color = "red"
+)
 
+plot(histograma)
+####### Cambiar/parafrasear conclusion
 
+# Se calcula el p-valor
+count2 <- sum(distribucion > observado)
+p.value <- (count2 + 1)/(n.perm + 1)
+
+if(p.value < alpha){
+  cat("La prueba es significativa para una significancia de: ", 1-alpha, " y un p-valor de: ", p.value , "\n")
+  cat("Hay suficiente evidencia para rechazar la hipótesis nula (H0) en favor de la alternativa (HA)\n")
+  cat("Se concluye que la localidad donde una persona verá el eclipse es dependiente de la procedencia (Chileno o Extranjero)")
+} else {
+  cat("La prueba no es significativa para una significancia de: ", 1-alpha, " y un p-valor de: ", p.value ,"\n")
+  cat("No hay suficiente evidencia para rechazar la hipótesis nula\n")
+  cat("Se concluye que la localidad donde una persona verá el eclipse es independiente de la procedencia (Chileno o Extranjero)")
+}
