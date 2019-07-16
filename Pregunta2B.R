@@ -53,13 +53,8 @@ set.seed(10*6+10*26)
 # Grupo 4 : [76-infinito]
 
 
-
 # Entonces con esto se quiere saber si las personas divididas en grupos
 # gastaron lo mismo o existe un mayor gasto de las personas con mas edad.
-
-
-
-
 
 
 ####---------------------------------------------------------------####
@@ -352,12 +347,24 @@ data.muestra.p2 <- datos_edad_ingresos %>% # De la población
 #### PARTE 2 : APLICACIÓN DEL METODO ROBUSTO   ####
 ####-------------------------------------------####
 
-# Como veiamos en la lectura, el paquete "WRS2" nos facilita varias 
-# funciones. Para utilizar metodos robustos.
+#DEFINICIÓN DE MÉTODOS ROBUSTOS
+#Los métodos robustos son aquellos que verifican y validan la efectividad 
+#de las hipótesis planteadas a partir de los datos presentes que pueden ser o no
+# de caracter atípico dentro de la muestra.
+#También predicen la efectividad de los  métodos paramétricos y/o
+#no paramétricos para estimar distintas estimadores como la media, la mediana o la varianza de la muestra
+#(En este ejercicio se debe estimar la media).
 
-# Por las condiciones del problema se podria sospechar que el metodo 
-# ANOVA es el indicado para comparar varias muestras. Incluso la 
-# alternativa no parametrica a ANOVA -> Kruskal.
+#Existen 4 tipos de metodos robustos: Estimador de Huber, Media α-recortado muestral,
+#Media α-winsorizada muestral, Mediana muestral.
+
+# En base a la lectura del curso, dentro de las bondades de R 
+# existen algunos paquetes que sirven para comprobar la eficiencia de los métodos.
+#El paquete "WRS2" nos facilita varias funcione para utilizar metodos robustos.
+
+# Dadas las condiciones del problema se podria sospechar que el metodo 
+# ANOVA es el indicado para comparar varias muestras. En caso de no ser así
+# existe una alternativa no parametrica asociada a ANOVA, el cual sería Kruskal.
 
 # Una alternativa para el metodo robusto de ANOVA  t1way() o t1waybt() 
 # con bootstraping, dependiendo de los datos:
@@ -493,3 +500,7 @@ print(prueba_edad.robusta_bootstrap.p2_v2)
 # promedio de ingresos por persona segun su edad, es distinto
 # Lo que quiere decir que no por tener más edad, tengo mas dinero 
 # para gastar. 
+#Además se confirma que el método ocupado para verificar la no existencia de diferencia de medias 
+#entre los rangos etarios y el presupuesto que utilizaron para el evento del eclipse es el adecuado
+
+
