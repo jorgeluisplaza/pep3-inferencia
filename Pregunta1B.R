@@ -18,13 +18,13 @@
 
 										# Pregunta 1
 
-#El equipo debe plantear una pregunta de investigaciÃ³n interesante que requiera la comparaciÃ³n de dos
-#proporciones.
-#Definiendo valores razonables (y bien justificados) para los diferentes factores para este estudio, el equipo
-#ha de determinar el tamaÃ±o de muestra necesitado para realizar esta comparaciÃ³n estadÃstica utilizando
-#muestreo sistemÃ¡tico.
-#Usando la semilla d1Â·d2+ d3Â·d4, el equipo debe realizar este muestreo en los datos de Coquimbo.
-#El equipo debe usar bootstrapping para responder su pregunta de investigaciÃ³n con la muestra obtenida
+# El equipo debe plantear una pregunta de investigaciÃ³n interesante que requiera la comparaciÃ³n de dos
+# proporciones.
+# Definiendo valores razonables (y bien justificados) para los diferentes factores para este estudio, el equipo
+# ha de determinar el tamaÃ±o de muestra necesitado para realizar esta comparaciÃ³n estadÃstica utilizando
+# muestreo sistemÃ¡tico.
+# Usando la semilla d1Â·d2+ d3Â·d4, el equipo debe realizar este muestreo en los datos de Coquimbo.
+# El equipo debe usar bootstrapping para responder su pregunta de investigaciÃ³n con la muestra obtenida
 
 
 
@@ -78,7 +78,13 @@ tabla <- data.frame(Procedencia=datos.todos$Procedencia,Presupuesto=datos.todos$
 # ha de determinar el tamaÃ±o de muestra necesitado para realizar esta comparaciÃ³n estadÃstica utilizando
 #Âmuestreo sistemÃ¡tico.
 
-# Al utilizar Muestreo Sistematico  debemos utilizar la siguiente formula para calcular el numero de muestras:
+# Para estimar la proporcion debemos utilizar la siguiente formula para calcular el numero de muestras:
+
+        #          N * p * q
+      # n =  ---------------------
+        #     (N - 1) * D + p * q
+
+
 P= 0.5 # = Probabilidad de Ocurrencia del FenoÌmeno Estudiado 
 Q = 0.5 # = Probabilidad de que no Ocurra el FenoÌmeno (q = 1 â p)
 N = 86 # numero de la poblaciÃ³n 
@@ -113,14 +119,39 @@ set.seed(341)
 ### es sys.sample
 
 # Se utiliza muestreo sistematico para el calculo de la muestra
+
+# Numero de muestra escogido
 n.sys <- nMuestras
-index <- sys.sample(N=nrow(tabla), n=n.sys)
+
+# Se obtienen los sujetos seleccionados mediante muestre sistematico, 
+#se entregan como parametros N y n que corresponden al tamaño de la poblacion
+# y al tamaño de la muestra respectivamente
+index <- sys.sample(N=nrow(tabla), n=nMuestras)
+
+# Se obtienen de la tabla de datos los sujetos seleccionados en index
 muestra <- tabla[c(index), ]
 frec <- 1:nrow(muestra)
+
+# Se obtiene la tabla con las muestras
 p1.1 <- aggregate(frec ~ Procedencia + Presupuesto, data = muestra, FUN = length)
 
 
-##Â  Los presupuestos son presupuestos 
+# Para realizar un estudio de proporciones se aplica un test  ??² de independencia. 
+
+# Un test  ??² de independencia se utiliza para determinar si el valor observado de una variable
+# depende del valor observado de la otra variable
+
+# En este caso, las variables en estudio son la procedencia y el presupuesto diario del turista. Se requiere saber si 
+# la procedencia depende del presupuesto con un estudio de proporciones entre turistas Chilenos y Extranjeros.
+
+# Las hipotesis planteadas son las siguientes:
+
+# H0: El presupuesto diario gastado por una persona depende de la procedencia de la persona
+# H1: El presupuesto diario gastado por una persona no depende de la procedencia de la persona
+
+
+##Â Los rangos de presupuestos elegidos por los investigadores son los siguientes:
+
 # 1 - [0-25.000]
 # 2 - [2500-50.000]
 # 3 - [50.000-75.000]
@@ -156,17 +187,26 @@ table.p1.1 <- data.frame(
 rownames(table.p1.1) <- c("Chileno", "Extranjero")
 
 
-#### DEFENIR MEJOR #######
-#### DEFENIR MEJOR #######
-#### DEFENIR MEJOR #######
-#### DEFENIR MEJOR #######
-#### DEFENIR MEJOR #######
-#### DEFENIR MEJOR #######
+# Bootstrapping es un metodo de remuestreo. Se utiliza para aproximar la distribucion en el muestreo de un estadistico
+# Procedimiento de bootstrapping es el siguiente
 
-# Se define estadistico para el bootstraping
-# Para cada iteracion se hace calculo de tabla
-# y de la prueba Chi - Squared
-# Se devuelve el estadistico obtenido
+# 1 - Se elige un tamano de la muestra
+# 2 - Mientras el tamano de la muestra sea menor a la muestra escogia:
+      # 2.1 - Se elige al azar una observacion de la muestra
+
+# Es importante mencionar que las observaciones se puede repetir n cantidad de veces
+# o incluso no aparecer en el remuestreo
+# Esta caracteristica lo diferencia de otras tecnicas de remuestreo
+
+# Luego, se escoge un numero de repeticiones de bootstrap
+# Para cada repeticion se calcula el estadistico
+# Se hace un estudio sobre la distribucion de los m estadisticos calculados
+
+# En el caso de R, se utiliza boot de la libreria boot
+
+# Se debe definir un estadistico: 
+# Para cada estadistico se hace calculo de la tabla, tomando muestras diferentes
+# A cada uno de ellos se le hace un test Chi - Squared.
 
 foo <- function(data, indices){
   frec <- 1:nrow(data)
@@ -202,31 +242,13 @@ foo <- function(data, indices){
   
 }
 
-
-#### DEFENIR MEJOR #######
-#### DEFENIR MEJOR #######
-#### DEFENIR MEJOR #######
-#### DEFENIR MEJOR #######
-#### DEFENIR MEJOR #######
-#### DEFENIR MEJOR #######
-
-
-
+# Boot hace calculo del bootstrapping, recibe la muestra, el estadistico y el numero de repeticiones
 
 # Se calcula el bootstraping sobre la cantidad de repeticion n.perm
 n.perm <- 1000
 bootobj <- boot(muestra, foo, R = n.perm)
 
 distribucion <- bootobj$t
-
-
-
-#### DEFENIR MEJOR #######
-#### DEFENIR MEJOR #######
-#### DEFENIR MEJOR #######
-#### DEFENIR MEJOR #######
-#### DEFENIR MEJOR #######
-#### DEFENIR MEJOR #######
 
 
 # Se define un alpha de 0.05
