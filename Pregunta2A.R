@@ -544,6 +544,6 @@ prueba.robusta.p2_v2 <- t1waybt(Ingresos ~ Alimento, data.muestra.p2)
 # es distinto.
 
 #Además se confirma que el método ocupado para verificar la no existencia de diferencia de medias 
-#de los turiste que se alimentaron de diferentes formas es el adecuado
+#de los turistas que se alimentaron de diferentes formas es el adecuado
 #------------------------------------------------------------------------
 

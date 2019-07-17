@@ -56,7 +56,7 @@ library(SamplingUtil)
 dir <- ""
 #Indicar nombre del archivo
 basename <- "eclipse2019.csv"
-## Link de descarga: https://docs.google.com/spreadsheets/d/15mG2ATv2ArBVioZ8NSSuixG7Fr_cX8iw_0K3thaGz_M/edit?usp=sharing #
+## Link de descarga: https://docs.google.com/spreadsheets/d/15mG2ATv2ArBVioZ8NSSuixG7Fr_cX8iw_0K3thaGz_M/edit?usp=sharing #
 # Acceso correo usach # 
 
 # Se lee el archivo   
@@ -97,10 +97,10 @@ tabla <- data.frame(Procedencia=datos.todos$Procedencia,Presupuesto=datos.todos$
 # Formula obtenida:  VI Muestreo Sistemático, Dr. Jesús Mellado Bosque
 # http://www.uaaan.mx/~jmelbos/muestreo/muapu4.pdf
 
-# P # = Probabilidad de Ocurrencia del Fenómeno Estudiado
-# Q  = Probabilidad de que no Ocurra el Fenómeno (q = 1 – p)
+# P  =  25 extranjeros / 86 total 
+# Q  =  61 chilenos / 86. 
 # Varianza = P*Q
-Varianza =  # CALCULAR .... 
+Varianza =  0.2061
 N = 86 # numero de la población
 e= 0.05 # Maximo error permitido 5 %
 D = (e^2)/4
@@ -116,6 +116,7 @@ cat(nMuestras)
 # Jorge Plaza: d2 = 13
 # Felipe Vasquez: d3 = 17
 # Nicolas Gutierrez: d4 = 17
+
 # Se calcula la semilla con los dias de nacimientos de los integrantes mencionados anteriormente
 # Semilla: d1 * d2 + d3 * d4 = 4 * 13 + 17 * 17 = 341
 set.seed(341)
@@ -142,7 +143,14 @@ set.seed(341)
 
 # referencias: https://www.netquest.com/blog/es/blog/es/muestreo-sistematico?fbclid=IwAR1HyAT1wP4px-mCRKxeqfi7W0bf0RR4FxvU4-SKpnTwYG4sCR0MYSFahrc
 
-# R tiene una función llamada sys.sample que selecciona una muestra sistemática de tamaño n.
+# Para realizar la prueba sistematica se utiliza la funcion sys.sample de
+# la libreria SamplingUnit. 
+
+######### Importante #############
+
+# Para el uso de la funcion se debe instalar 
+# la libreria "devtools", luego descomentar la linea #install_github("DFJL/SamplingUtil")
+# en las librerias definidas anteriormente y ejecutar 
 
 n.sys <- nMuestras
 index <- sys.sample(N=nrow(tabla), n=n.sys)
@@ -150,7 +158,9 @@ muestra <- tabla[c(index), ]
 frec <- 1:nrow(muestra)
 p1 <- aggregate(frec ~ Procedencia + Presupuesto, data = muestra, FUN = length)
 
-## Los presupuestos son presupuestos 
+## El rango de presupuesto escogidos por los investigadores
+## debido al comportamiento de los datos son los siguientes:
+
 # 1 - [0-25.000]
 # 2 - [2500-50.000]
 # 3 - [50.000-75.000]
@@ -180,9 +190,7 @@ table.p1 <- data.frame(
   "> 75000"=presupuesto.Mayor75
 )
 
-Presupuesto <- 
-
-frecuencias <- aggregate(frec ~ Procedencia + Localidad, data = muestra, FUN = length)
+frecuencias <- aggregate(frec ~ Procedencia + Presupuesto, data = muestra, FUN = length)
 
 # Se definen el nombre de las filas 
 rownames(table.p1) <- c("Chileno", "Extranjero")
@@ -196,8 +204,8 @@ rownames(table.p1) <- c("Chileno", "Extranjero")
 #  Esto funciona, tal vez sorprendentemente, incluso cuando está utilizando una sola muestra para generar los datos.
 # La enorme potencia de cálculo de los ordenadores actuales facilita considerablemente 
 # la aplicabilidad de este método tan costoso computacionalmente.
-#Esta técnica resulta especialmente útil en aquellas situaciones en las que las muestras con las que se cuenta son pequeñas 
-# Como es en este caso.
+# Esta técnica resulta especialmente útil en aquellas situaciones en las que las muestras con las que se cuenta son pequeñas 
+# Como es en este caso.
 
 #fuentes :https://www.statisticshowto.datasciencecentral.com/bootstrap-sample/?fbclid=IwAR3BUYPJN-4EAxDltH3HyYROns1OUuDA-iN1Gmk6J-IGWS04bEBE5BSFd9s
 
@@ -238,9 +246,7 @@ chisqr <- function(data, indices){
   rownames(table.p1) <- c("Chileno", "Extranjero")
   chi <- chisq.test(table.p1)
   return(chi$statistic)
-  
 }
-
 
 # Se calcula el bootstraping sobre la cantidad de repeticion n.perm
 n.perm <- 1000
@@ -248,17 +254,7 @@ modelo.boot <- boot(muestra, chisqr, R = n.perm)
 
 distribucion <- modelo.boot$t
 
-
-
-#### DEFENIR MEJOR #######
-#### DEFENIR MEJOR #######
-#### DEFENIR MEJOR #######
-#### DEFENIR MEJOR #######
-#### DEFENIR MEJOR #######
-#### DEFENIR MEJOR #######
-
-# procedimiento ## 
-
+## procedimiento ##
 
 # Se tiene una "tabla de dos vías"  que registra las
 # frecuencias observadas para las posibles combinaciones de dos
@@ -266,21 +262,27 @@ distribucion <- modelo.boot$t
 # Prueba χ^2 de Independencia. En donde hay dos factores ("Presupuesto" y "Procedencia")
 # que se miden en una misma población
 
+# Para la realizacion de esta prueba se necesita una condicion
+
+# 1 - El tamaño de la muestra debe ser mayor que 5
+
+# Se cumple la condicion sabiendo que el n estudiado es 69
+
 
 cat("\n")
+
+# Se plantean las hipotesis correspondientes a la prueba de independencia
 
 cat("HO: la procedencia de una persona no depende del presupuesto")
 cat("HA: la procedencia incide en el presupuesto \n")
 
+# Volver a resaltar que para la veracidad de alguna de estas pruebas de utiliza
+# un estudio de las proporciones
 
 # Se define un alpha de 0.05 estandar debido a que  es razonable para esta prueba, dado la cantidad de datos obtenidos y lo que se busca (no critico).
-alpha <- 0.05  # es decir 95% confianza.
+alpha <- 0.05 # es decir 95% confianza.
 
-
-
-
-# En r la función chisq.test realiza una prueba chi-cuadrado, utilizaremos esto para realizar una prueba de independecia  χ^2.
-
+# En r la función chisq.test realiza una prueba chi-cuadrado, utilizaremos esto para realizar una prueba de independecia  χ^2.
 
 # Se obtiene el valor observado
 observado <- chisq.test(table.p1)$statistic
@@ -297,7 +299,7 @@ histograma <- gghistogram(
   fill = "lightblue",
   xlab = "Chi cuadrado",
   ylab = "Frecuencia",
-  title = "inserte titulo",
+  title = "Distribucion χ2 usando Bootstrap",
   bins = 35
 ) + geom_vline(
   xintercept = observado,
@@ -308,7 +310,10 @@ histograma <- gghistogram(
 )
 
 plot(histograma)
-####### Cambiar/parafrasear conclusion
+####### Para el calculo del p - valor se estudia los valores obtenidos
+# por la distribucion y el observado, para esto se cuenta la cantidad de 
+# veces que el valor es mayor y se obtiene el calculo del p - valor
+# sobre la cantidad de repeticiones realizadas con la prueba de bootstrap
 
 # Se calcula el p-valor
 count2 <- sum(distribucion > observado)
@@ -317,9 +322,16 @@ p.value <- (count2 + 1)/(n.perm + 1)
 if(p.value < alpha){
   cat("La prueba es significativa para una significancia de: ", 1-alpha, " y un p-valor de: ", p.value , "\n")
   cat("Hay suficiente evidencia para rechazar la hipótesis nula (H0) en favor de la alternativa (HA)\n")
-  cat("Se concluye que la localidad donde una persona verá el eclipse es dependiente de la procedencia (Chileno o Extranjero)")
+  cat("Se concluye el presupuesto de una persona verá el eclipse es dependiente de la procedencia (Chileno o Extranjero)")
 } else {
   cat("La prueba no es significativa para una significancia de: ", 1-alpha, " y un p-valor de: ", p.value ,"\n")
   cat("No hay suficiente evidencia para rechazar la hipótesis nula\n")
-  cat("Se concluye que la localidad donde una persona verá el eclipse es independiente de la procedencia (Chileno o Extranjero)")
+  cat("Se concluye que el presupuesto de una persona que verá el eclipse es independiente de la procedencia (Chileno o Extranjero)")
 }
+
+# La prueba concluye que no hay evidencia suficiente para rechazar la hipotesis nula.
+# Es decir, lo planteado por los investigadores no se puede confirmar debido a que 
+# la prueba nos dice que el gasto de presupuesto diario de una persona
+# no depende de la procedencia de la misma
+
+
