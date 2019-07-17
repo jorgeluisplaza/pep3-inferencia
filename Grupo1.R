@@ -927,44 +927,75 @@ muestra <- rbind(muestra.chilenos, muestra.extranjeros)
 muestra.completa.chilenos <- datos.todos[ indices.chilenos, ]
 muestra.completa.extranjeros <- datos.todos[ indices.extranjeros, ]
 muestra.completa <- rbind(muestra.completa.chilenos, muestra.completa.extranjeros)
+######## Análisis de modelos ############
 
+# Se eligen variables predictoras para el modelo logístico.
+# Hay 3 candidatos posibles que se sugieren en base a la experiencia encuestando
+# 
+# 1. Edad: 
+#     Se notaba que la mayoría de los jóvenes eran chilenos, mientras que era común
+#     encontrarse con extranjeros de mayor edad.
+# 2. Presupuesto:
+#     También se encuesto a varios extranjeros que contaban con un alto presupuesto
+#     en comparación con algunos chilenos. Podría haber correlación con el número de noches
+# 3. Noches:
+#     Se pensaba que por lo general, un extranjero vendría a chile por una cantidad mas
+#     extensa de tiempo, en vez de realizar un viaje esporádico. Mientras que un chileno
+#     puede estacionarse en el lugar con mayor libertad. Por otro lado, los datos no resultaron
+#     como se esperaba. Se incluye de igual manera para observar su influencia en el modelo.
 
-
-
-
+# Comenzando con el modelo nulo, se van construyendo los modelos y observando su AIC y p-valor
 nulo <- glm(
   Procedencia ~ 1,
   family = binomial(link = "logit"),
   data = muestra
 )
 print(summary(nulo))
+# Se tiene un AIC base de 62.997
 
+# Ahora, incluyendo la edad al modelo:
 modelo.edad <- glm(
   Procedencia ~ Edad, 
   family=binomial(link='logit'), 
   data=muestra, 
   na.action = na.omit
 )
-
 print(summary(modelo.edad))
 
+# Se realiza una comparación de la desviación usando anova
+# La hipotesis nula de esta comparación es que no hay mejoras significativas
+# en agregar la edad al modelo. En este caso se rechaza esta hipótesis (P < 0.001)
+# por lo que existen mejoras en el modelo con la Edad. 
 comparacion <- anova(nulo, modelo.edad, test = "LRT")
 print(comparacion)
 
-modelo.edad.noches <- update(modelo.edad, . ~ . + Noches)
+# Se mejora a un AIC de 50.8
+# Se mantiene la edad como un predictor efectivo.
 
+# Ahora incluyendo las noches:
+modelo.edad.noches <- update(modelo.edad, . ~ . + Noches)
+print(summary(modelo.edad.noches))
+
+# Se obtiene un AIC mayor al anterior!. Más aún, la comparación de modelos
+# Tampoco resulta significativa por lo que no hay mejoras en el modelo
+# Al incluir las Noches. Se opta por no incluirlo
 comparacion <- anova(modelo.edad, modelo.edad.noches, test = "LRT")
 print(comparacion)
 
+# Ahora incluyendo el presupuesto:
 modelo.edad.presupuesto <- update(modelo.edad, . ~ . + Presupuesto)
+print(summary(modelo.edad.presupuesto))
 
+# Se mejora el AIC a un  44.3. Aunque un P-valor de 17.8 no resulta muy confiable
+# Sin embargo, en cuanto a la mejora en comparación con el modelo anterior
+# resulta en una mejora significativa. Se incluye en el modelo
 comparacion <- anova(modelo.edad, modelo.edad.presupuesto, test = "LRT")
 print(comparacion)
 
+# Se queda con el modelo Procedencia ~ Edad + Presupuesto
 modelo <- modelo.edad.presupuesto
 
-# Se queda con el modelo Procedencia ~ Edad + Presupuesto
-# Revision de casos sospechosos (copia barata del script del profe)
+# Revision de casos sospechosos
 variables <- names(coef(modelo))[-1]
 subdatos <- muestra[, c(variables, "Procedencia")]
 
@@ -1034,9 +1065,11 @@ print(output[sospechosos, ])
 # Como se tienen todos estos casos sospechosos se debe analizar que hacer con ellos
 # Sacarlos del modelo o dejarlos.
 
-# Para este caso, los casos at??picos fueron extranjeros con altos presupuestos
-# o chilenos de mucha edad.
-
+# Para este caso, los casos atípicos fueron extranjeros con altos presupuestos,
+# chilenos de mucha edad o extranjeros muy jóvenes.
+# Estos datos corresponden a valores totalmente probables, dado el gran número de personas
+# que asisten a este evento... No es posible eliminarlos de esta prueba ya que la muestra
+# no es lo suficientemente grande. (Casos sospechosos fueron el 5% de toda la muestra)
 
 # CONDICIONES DE MODELO DE REGRESION LOGISTICA
 # 1) Linealidad
@@ -1102,33 +1135,32 @@ cat("Factores de inflacion de la varianza\n")
 cat("------------------------------------\n")
 print(round(vifs, 1))
 
+#Se obtuvo un vifs de 1, no hay problemas
+
 cat("\n")
 cat("Factor de inflacion de la varianza medio\n")
 cat("----------------------------------------\n")
 print(round(mean(vifs), 1))
 
+# Se obtuvo un promedio de 1, que es mayor a un 0.4, no hay problemas
 tols <- 1/vifs
 cat("\n")
 cat("Tolerancia\n")
 cat("----------\n")
 print(round(tols, 2))
 
-
-# Segun los resultados encontrados:
-#   VIF = 1           => bajo el umbral propuesto (VIF < 10)
-#   VIF promedio = 1  => en el limite, por lo que puede existir sesgo
-#   Tolerancia = 0.97    => sobre los valores propuestos (T > 0.4 siendo exigentes)
+# Los vifs fueron 1 y por ende tolerancias de 1, que no es preocupante
 
 # Por lo tanto se concluye que no se esta presente frente a multicolinealidad
-# (aunque puede existir sesgo)
 
-######################################################
+#################### Evaluación del modelo: Predicciones ##################################
 
-# Evaluación del modelo log??stico usando predicciones
-# Se crean los modelos anteriores separando la muestra 
-# en datos de entramiento y prueba
+# Evaluación del modelo logístico usando predicciones
+# Se crean los modelos anteriores con datos de entrenamiento, separando la muestra
+# en entrenamiento y prueba.
+# Se calculan los aciertos y fallos del modelo con predicciones del grupo de prueba.
 
-#Crear particion de muestra con proporcion:
+# Crear particion de muestra con proporcion:
 
 # - 70% datos de entrenamiento
 # - 30% datos de prueba
@@ -1143,11 +1175,11 @@ modelo.glm.1 <- glm(Procedencia ~ Edad, data = training, family="binomial"(link=
 # Modelo número 2: Procedencia ~ Edad + Noches
 modelo.glm.2 <- glm(Procedencia ~ Edad + Noches, data = training, family="binomial"(link="logit"))
 
-# Modelo número 3: Procedencia ~ Edad + Presupuesto
+# Modelo número 3: Procedencia ~ Edad + Presupuesto (Elegido)
 modelo.glm.3 <- glm(Procedencia ~ Edad + Presupuesto, data = training, family="binomial"(link="logit"))
 
 # Se obtiene la probabilidad predicha por el modelo.
-# Retorna lista con las probabilidades del 
+# Retorna lista con la respuesta de la regresión logística (no las probabilidades)
 pred1 <- predict(modelo.glm.1, newdata=testing, type="response")
 pred2 <- predict(modelo.glm.2, newdata=testing, type="response")
 pred3 <- predict(modelo.glm.3, newdata=testing, type="response")
@@ -1159,7 +1191,7 @@ responses.glm.2 <- ifelse(pred2 < 0.5, "Chileno", "Extranjero")
 responses.glm.3 <- ifelse(pred3 < 0.5, "Chileno", "Extranjero")
 
 # Se realiza una tabla de contingencia para las predicciones. 
-# Los valores de la matr??z que no coinciden sus nombres
+# Los valores de la matriz que no coinciden sus nombres
 # indican errores de predicción. 
 
 table(responses.glm.1, testing$Procedencia)
@@ -1167,44 +1199,47 @@ table(responses.glm.2, testing$Procedencia)
 table(responses.glm.3, testing$Procedencia)
 
 # Se calcula el porcentaje de aciertos del modelo para el conjunto
-# de pruebas. El modelo elegido fue el tercero (Edad + Presupuesto)
-# que obtuvo un 91.7% de acierto.
+# de pruebas. Todos los modelos obtienen la misma precisión de 66.7%.
 # En este caso es muy pequeño (12 casos), por lo que no resulta
 # una medida confiable. 
-mean(responses.glm.1 == testing$Procedencia)
-mean(responses.glm.2 == testing$Procedencia)
-mean(responses.glm.3 == testing$Procedencia)
 
-
-
-# Likelihood Ratio Test
-# Lo mismo que esta mas arriba con los casos sospechosos, VIF y condiciones (debiese ser lo mismo)
+mean1 <- round(mean(responses.glm.1 == testing$Procedencia)*100, 2)
+mean2 <- round(mean(responses.glm.2 == testing$Procedencia)*100, 2)
+mean3 <- round(mean(responses.glm.3 == testing$Procedencia)*100, 2)
+cat("Exactitud del modelo 1 -> Procedencia ~ Edad: ", mean1, "%\n")
+cat("Exactitud del modelo 2 -> Procedencia ~ Edad + Noches: ", mean2, "%\n")
+cat("Exactitud del modelo 3 -> Procedencia ~ Edad + Presupuesto: ", mean3, "% \n")
 
 # Modelo automático de R. A partir del modelo nulo (Constante)
 # Agregar variables predictoras de manera ascendente por pasos.
-# cat("\n\n");stop("*** SIN ERROR ***")
 
-#Es la misma muestra pero incluyendo todas las columnas 
+#Estas variables son la misma muestra pero incluyendo todas las columnas 
 training.modelo.R <- muestra.completa[ Train, ]
 testing.modelo.R <- muestra.completa[ -Train, ]
 
+# Modelos nulo y completo para realizar un análisis de pasos.
 modelo.nulo <- glm(Procedencia ~ 1, data=training.modelo.R, family=binomial(link="logit"))
 modelo.completo <- glm(Procedencia ~ ., data=training.modelo.R, family=binomial(link="logit"))
 
+# Modelo se construye desde el modelo nulo (Procedencia ~ 1) paso por paso, según el que tenga
+# un AIC menor entre todas las variables predictoras. Se limita a 3 variables.
 modelo.auto <- step(
   modelo.nulo,
   direction = "both",
-  scope=list(lower=modelo.nulo, upper=modelo.completo),
-  trace = TRUE
+  scope=list(lower=modelo.nulo, upper=modelo.completo)
 )
 print(modelo.auto)
 
+# Se obtuvo un AIC de 13.8, menor a un AIC de nuestro modelo 44.3
 
-# cat("\n\n");stop("*** SIN ERROR ***")
+# Las variables óptimas fueron Región, Edad y Organización (Cuenta propia/Asesorado por familiar/amigo)
+# Por un lado, es evidente que usar la región de precedencia no tendrá  valores atípicos para predecir
+# la procedencia, ya que esta indica si son del país o no. Se coincide que la edad se incluye en el modelo.
 
 
+############## Comparación de modelos por ROC #################
 
-
+# Receiver Operating Characteristic (ROC)
 
 roc1 <- roc(testing$Procedencia, pred1)
 roc1
