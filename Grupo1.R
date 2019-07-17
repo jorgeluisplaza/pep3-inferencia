@@ -876,6 +876,12 @@ prueba.robusta.p2_v2 <- t1waybt(Ingresos ~ Alimento, data.muestra.p2)
 
 ########## FIN PREGUNTA 2 #############
 
+
+
+#-----------------------------------------------------------------
+#-----------------------------------------------------------------
+#-----------------------------------------------------------------
+
 ########## PREGUNTA 3 ###########
 
 # Indicar directorio del archivo .csv
@@ -1180,7 +1186,10 @@ modelo.glm.3 <- glm(Procedencia ~ Edad + Presupuesto, data = training, family="b
 
 # Se obtiene la probabilidad predicha por el modelo.
 # Retorna lista con la respuesta de la regresión logística (no las probabilidades)
-pred1 <- predict(modelo.glm.1, newdata=testing, type="response")
+#pred1 respuesta regresion logistica de la procedencia con la edad
+#pred2 respuesta regresion logistica de procedencia, edad y noches
+#pred3 respuesta regresion logistica de procedencia, edad y presupuesto
+pred1 <- predict(modelo.glm.1, newdata=testing, type="response") 
 pred2 <- predict(modelo.glm.2, newdata=testing, type="response")
 pred3 <- predict(modelo.glm.3, newdata=testing, type="response")
 
@@ -1240,26 +1249,40 @@ print(modelo.auto)
 ############## Comparación de modelos por ROC #################
 
 # Receiver Operating Characteristic (ROC)
+#Constituye un método estadístico para determinar la exactitud de los modelos,
+#siendo utilizadas con tres propósitos específicos: determinar el punto de corte de una escala 
+#continua en el que se alcanza la sensibilidad y especificidad más alta, evaluar la capacidad discriminativa
+#del modelo, es decir, su capacidad de diferenciar la procedencia del presupuesto o la procedencia con la edad, y comparar la capacidad
+#discriminativa de dos o más modelos que expresan sus resultados como escalas continuas. 
 
+#Para un modelo de proceso de punto ajustado, el ROC muestra la capacidad de la intensidad del modelo ajustado para separar 
+#el dominio espacial en áreas de alta y baja densidad de puntos. La ROC no es un diagnóstico de la bondad de ajuste del modelo
+
+#Se obtiene el roc de la pred1
 roc1 <- roc(testing$Procedencia, pred1)
 roc1
 plot(roc1)
 
+#Se obtiene el roc de la pred2
 roc2 <- roc(testing$Procedencia, pred2)
 roc2
 plot(roc2)
 
+#Se obtiene el roc de la pred3
 roc3 <- roc(testing$Procedencia, pred3)
 roc3
 plot(roc3)
+
+#Se hace un ROC comparativo entre cada modelos
+# 1- Procedencia ~ Edad
+# 2- Procedencia ~ Edad + Presupuesto
+# 3- Procedencia ~ Edad + Presupuesto + Noches
 
 roc.test(roc1,roc2)
 roc.test(roc2,roc3)
 roc.test(roc1,roc3)
 
-# 1- Procedencia ~ Edad
-# 2- Procedencia ~ Edad + Presupuesto
-# 3- Procedencia ~ Edad + Presupuesto + Noches
-
 # AUC de modelo 1 es menor a 2 y 3
 # AUC de 2 y 3 son iguales
+
+
